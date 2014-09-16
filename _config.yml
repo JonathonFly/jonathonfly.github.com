@@ -11,7 +11,7 @@ highlighter: pygments
 title : JonathonFly's Blog
 tagline: Site Tagline
 author :
-  name : Name Lastname
+  name : Yunfei Sun
   email : 1204034391@qq.com
   github : JonathonFly
   twitter : username
@@ -82,7 +82,7 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : jekyllbootstrap
+      short_name : JonathonFly
     livefyre :
       site_id : 123
     intensedebate :
