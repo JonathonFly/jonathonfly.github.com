@@ -10,7 +10,7 @@ tags : []
 
 在配置好eclipse tomcat后，启动时报如下错误信息：
     
-![1.png](https://github.com/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-10-9/1.png "")
+<img src="https://github.com/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-10-9/1.png"/>
 
 ![2.png](pictures/2015-10-9/2.png "")
 
