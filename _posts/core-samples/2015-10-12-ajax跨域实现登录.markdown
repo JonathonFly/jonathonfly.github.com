@@ -15,6 +15,13 @@ tags : []
 
 <pre>
 <code>
+
+</code>
+</pre>
+
+
+
+```java
 public LoginDto login(String customer_no, String name, String pwd, String timeZone) {
 		LoginDto loginDto = new LoginDto();
 		CloseableHttpClient client = HttpClients.createDefault();
@@ -28,7 +35,6 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 			String loginUrl=netcarev5LoginUrl;
 			
 			//httppost and results. 
-			//result[0]=httpstatus, result[1]=
 			result = HttpClientUtil.httpPost(client, loginUrl, parames);
 			JSONObject jsonobject = JSONObject.fromObject(result[1]);
 			Map<String, Object> mapJson = JSONObject.fromObject(jsonobject);
@@ -61,8 +67,8 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 		}
 		return loginDto;
 	}	
-</code>
-</pre>
+```
+
 
 
 HttpClientUtil.java
@@ -70,6 +76,13 @@ HttpClientUtil.java
 
 <pre>
 <code>
+
+</code>
+</pre>
+
+
+
+```java
 public class HttpClientUtil {
     public static String[] httpPost(CloseableHttpClient client, String url, Map<String, String> map) throws IOException {
 		String[] result = new String[3];
@@ -110,8 +123,7 @@ public class HttpClientUtil {
 		return result;
 	}
 }
-</code>
-</pre>
+```
 
 
 
