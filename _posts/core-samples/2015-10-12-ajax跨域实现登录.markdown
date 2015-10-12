@@ -119,7 +119,7 @@ public class HttpClientUtil {
 
 主要代码如下：
 
-<pre>
+
 <code>
 $(document).ready(function() {
     var d = new Date();
@@ -143,6 +143,6 @@ $(document).ready(function() {
     window.open("http://xxxx:7001/welcome.jsp");
 }
 </code>
-</pre>
+
 
 呜呼，蜀道之难，难于上青天。
