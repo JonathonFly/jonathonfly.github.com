@@ -12,8 +12,56 @@ tags : []
 
 于是我便想到用apache的httpclient 4.3包来做。利用httpclient模拟浏览器给目标系统的登录action发送post/get请求，请求成功后，会返回一个response。response中包含了登录结果json，以及服务器的jsessionid。如果成功，我将 ;jsessionid=xxx添加到首页的url后面，作为最终成功的url返回。在浏览器输入该url后，则可达到单点登录的效果。
 
-```java
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-smi">LoginDto</span> login(<span class="pl-smi">String</span> customer_no, <span class="pl-smi">String</span> name, <span class="pl-smi">String</span> pwd, <span class="pl-smi">String</span> timeZone) {
+        <span class="pl-smi">LoginDto</span> loginDto <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">LoginDto</span>();
+        <span class="pl-smi">CloseableHttpClient</span> client <span class="pl-k">=</span> <span class="pl-smi">HttpClients</span><span class="pl-k">.</span>createDefault();
+        <span class="pl-k">String</span>[] result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[<span class="pl-c1">3</span>];
+        <span class="pl-k">try</span> {
+            <span class="pl-k">HashMap&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> parames <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">HashMap&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span>();
+            parames<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>customer_no<span class="pl-pds">"</span></span>, customer_no);
+            parames<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, name);
+            parames<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>pwd<span class="pl-pds">"</span></span>, pwd);
+            parames<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>timeZone<span class="pl-pds">"</span></span>, timeZone);
+            <span class="pl-smi">String</span> loginUrl<span class="pl-k">=</span>netcarev5LoginUrl;
 
+            <span class="pl-c">//httppost and results. </span>
+            <span class="pl-c">//result[0]=httpstatus, result[1]=</span>
+            result <span class="pl-k">=</span> <span class="pl-smi">HttpClientUtil</span><span class="pl-k">.</span>httpPost(client, loginUrl, parames);
+            <span class="pl-smi">JSONObject</span> jsonobject <span class="pl-k">=</span> <span class="pl-smi">JSONObject</span><span class="pl-k">.</span>fromObject(result[<span class="pl-c1">1</span>]);
+            <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Object</span>&gt;</span> mapJson <span class="pl-k">=</span> <span class="pl-smi">JSONObject</span><span class="pl-k">.</span>fromObject(jsonobject);
+            <span class="pl-smi">Boolean</span> token <span class="pl-k">=</span> (<span class="pl-smi">Boolean</span>) mapJson<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>result<span class="pl-pds">"</span></span>);
+
+
+            <span class="pl-k">if</span> (token<span class="pl-k">.</span>equals(<span class="pl-c1">true</span>)) {
+                <span class="pl-c">//success</span>
+                loginDto<span class="pl-k">.</span>setIsSuccess(<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>);
+                <span class="pl-smi">String</span> url <span class="pl-k">=</span> netcarev5_success_url;
+                <span class="pl-k">if</span> (result[<span class="pl-c1">2</span>] <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>result[<span class="pl-c1">2</span>]<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    url <span class="pl-k">=</span> url <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>;JSESSIONID=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> result[<span class="pl-c1">2</span>] <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+                loginDto<span class="pl-k">.</span>setWelcomeUrl(url);
+                logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>Login Sucess!   SuccessUrl=<span class="pl-pds">"</span></span><span class="pl-k">+</span>url);  
+            } <span class="pl-k">else</span> {
+                <span class="pl-c">//failure</span>
+                loginDto<span class="pl-k">.</span>setIsSuccess(<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span>);
+                loginDto<span class="pl-k">.</span>setWelcomeUrl(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>);
+                logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>Login Fail!<span class="pl-pds">"</span></span>);  
+            }
+        } <span class="pl-k">catch</span> (<span class="pl-smi">IOException</span> e) {
+            e<span class="pl-k">.</span>printStackTrace();
+        } <span class="pl-k">finally</span> {
+            <span class="pl-k">try</span> {
+                <span class="pl-c">//close client</span>
+                client<span class="pl-k">.</span>close();
+            } <span class="pl-k">catch</span> (<span class="pl-smi">IOException</span> e) {
+                e<span class="pl-k">.</span>printStackTrace();
+            }
+        }
+        <span class="pl-k">return</span> loginDto;
+    }
+</pre></div>
+
+
+```java
 public LoginDto login(String customer_no, String name, String pwd, String timeZone) {
 		LoginDto loginDto = new LoginDto();
 		CloseableHttpClient client = HttpClients.createDefault();
@@ -25,11 +73,6 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 			parames.put("pwd", pwd);
 			parames.put("timeZone", timeZone);
 			String loginUrl=netcarev5LoginUrl;
-
-```	
-
-	
-```java
 			
 			//httppost and results. 
 			result = HttpClientUtil.httpPost(client, loginUrl, parames);
@@ -68,6 +111,48 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 ```
 
 
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">HttpClientUtil</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">String</span>[] <span class="pl-en">httpPost</span>(<span class="pl-smi">CloseableHttpClient</span> <span class="pl-v">client</span>, <span class="pl-smi">String</span> <span class="pl-v">url</span>, <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> <span class="pl-v">map</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span> {
+        <span class="pl-k">String</span>[] result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[<span class="pl-c1">3</span>];
+        <span class="pl-smi">String</span> temp <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+        <span class="pl-smi">HttpPost</span> httppost <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">HttpPost</span>(url);
+        <span class="pl-c">// httppost</span>
+        <span class="pl-k">List&lt;<span class="pl-smi">NameValuePair</span>&gt;</span> params <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">ArrayList&lt;<span class="pl-smi">NameValuePair</span>&gt;</span>();
+        <span class="pl-c">// post params</span>
+        <span class="pl-k">if</span> (map <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> map<span class="pl-k">.</span>size() <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+            <span class="pl-k">for</span> (<span class="pl-smi">Map</span><span class="pl-k">.</span><span class="pl-k">Entry&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> entry <span class="pl-k">:</span> map<span class="pl-k">.</span>entrySet()) {
+                params<span class="pl-k">.</span>add(<span class="pl-k">new</span> <span class="pl-smi">BasicNameValuePair</span>(entry<span class="pl-k">.</span>getKey(), entry<span class="pl-k">.</span>getValue()));
+            }
+            <span class="pl-c">// add params</span>
+            httppost<span class="pl-k">.</span>setEntity(<span class="pl-k">new</span> <span class="pl-smi">UrlEncodedFormEntity</span>(params, <span class="pl-c1">HTTP<span class="pl-k">.</span>UTF_8</span>));
+        }
+        <span class="pl-c">// encoding</span>
+        <span class="pl-smi">UrlEncodedFormEntity</span> postEntity <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">UrlEncodedFormEntity</span>(params, <span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>);
+        httppost<span class="pl-k">.</span>setEntity(postEntity);
+
+        <span class="pl-c">// excute httppost and get response.</span>
+        <span class="pl-smi">HttpResponse</span> response <span class="pl-k">=</span> client<span class="pl-k">.</span>execute(httppost);
+
+        <span class="pl-k">if</span> (response<span class="pl-k">.</span>getStatusLine()<span class="pl-k">.</span>getStatusCode() <span class="pl-k">==</span> <span class="pl-smi">HttpStatus</span><span class="pl-c1"><span class="pl-k">.</span>SC_OK</span>) {
+            <span class="pl-c">//if httpstatus equals 200.</span>
+            result[<span class="pl-c1">0</span>] <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>200<span class="pl-pds">"</span></span>;
+            result[<span class="pl-c1">1</span>] <span class="pl-k">=</span> <span class="pl-smi">EntityUtils</span><span class="pl-k">.</span>toString(response<span class="pl-k">.</span>getEntity());<span class="pl-c">// response result json</span>
+
+            <span class="pl-c">//get jsessionid.</span>
+            <span class="pl-k">if</span> (response<span class="pl-k">.</span>containsHeader(<span class="pl-s"><span class="pl-pds">"</span>Set-Cookie<span class="pl-pds">"</span></span>)) {
+                <span class="pl-smi">String</span> setCookie <span class="pl-k">=</span> response<span class="pl-k">.</span>getFirstHeader(<span class="pl-s"><span class="pl-pds">"</span>Set-Cookie<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>getValue();
+                <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(setCookie);
+                <span class="pl-smi">String</span> <span class="pl-c1">JSESSIONID</span> <span class="pl-k">=</span> setCookie<span class="pl-k">.</span>substring(<span class="pl-s"><span class="pl-pds">"</span>JSESSIONID=<span class="pl-pds">"</span></span><span class="pl-k">.</span>length(), setCookie<span class="pl-k">.</span>indexOf(<span class="pl-s"><span class="pl-pds">"</span>;<span class="pl-pds">"</span></span>));
+                result[<span class="pl-c1">2</span>] <span class="pl-k">=</span> <span class="pl-c1">JSESSIONID</span>;
+            }
+        }
+
+
+        <span class="pl-k">return</span> result;
+    }
+}
+</pre></div>
+
 
 ```java
 
@@ -89,10 +174,6 @@ public class HttpClientUtil {
 		// encoding
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(params, "UTF-8");
 		httppost.setEntity(postEntity);
-
-```
-
-```java
 
         // excute httppost and get response.
 		HttpResponse response = client.execute(httppost);
@@ -126,8 +207,30 @@ public class HttpClientUtil {
 
 主要代码如下：
 
-```javascript
+<div class="highlight highlight-source-js"><pre>$(<span class="pl-c1">document</span>).ready(<span class="pl-k">function</span>() {
+    <span class="pl-k">var</span> d <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Date</span>();
+    <span class="pl-k">var</span> param <span class="pl-k">=</span> {
+        name <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+        pwd <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+        customer_no <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+        timeZone <span class="pl-k">:</span> d.<span class="pl-c1">getTimezoneOffset</span>()
+    };  
+    <span class="pl-k">var</span> url <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://xxxx:7001/login/auth-login.action<span class="pl-pds">'</span></span>;
+    $.ajax(url, {
+        async<span class="pl-k">:</span><span class="pl-c1">false</span>,
+        data<span class="pl-k">:</span>param,
+        dataType<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>jsonp<span class="pl-pds">'</span></span>,
+        crossDomain<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+        <span class="pl-en">success</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">data</span>) {
+        },
+        <span class="pl-en">error</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">XMLHttpRequest</span>, <span class="pl-smi">textStatus</span>, <span class="pl-smi">errorThrown</span>) {
+        },
+    }); 
+    <span class="pl-c1">window</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>http://xxxx:7001/welcome.jsp<span class="pl-pds">"</span></span>);
+}
+</pre></div>
 
+```javascript
 $(document).ready(function() {
     var d = new Date();
     var param = {
@@ -149,7 +252,6 @@ $(document).ready(function() {
     }); 
     window.open("http://xxxx:7001/welcome.jsp");
 }
-
 ```
 
 呜呼，蜀道之难，难于上青天。
