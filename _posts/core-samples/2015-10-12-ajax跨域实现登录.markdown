@@ -13,7 +13,8 @@ tags : []
 于是我便想到用apache的httpclient 4.3包来做。利用httpclient模拟浏览器给目标系统的登录action发送post/get请求，请求成功后，会返回一个response。response中包含了登录结果json，以及服务器的jsessionid。如果成功，我将 ;jsessionid=xxx添加到首页的url后面，作为最终成功的url返回。在浏览器输入该url后，则可达到单点登录的效果。
 
 
-```java
+
+<div class="highlight highlight-source-java"><pre>
 
 public LoginDto login(String customer_no, String name, String pwd, String timeZone) {
 		LoginDto loginDto = new LoginDto();
@@ -58,7 +59,7 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 		return loginDto;
 	}
 		
-```
+</pre></div>
 
 
 
