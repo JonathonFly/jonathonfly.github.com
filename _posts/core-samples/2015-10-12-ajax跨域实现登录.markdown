@@ -11,6 +11,7 @@ tags : []
 受另一个项目的影响，一开始我打算用webservice写一个登录接口，输入参数是用户名、密码等信息，返回参数是是否成功、成功的url。
 
 于是我便想到用apache的httpclient 4.3包来做。利用httpclient模拟浏览器给目标系统的登录action发送post/get请求，请求成功后，会返回一个response。response中包含了登录结果json，以及服务器的jsessionid。如果成功，我将 ;jsessionid=xxx添加到首页的url后面，作为最终成功的url返回。在浏览器输入该url后，则可达到单点登录的效果。
+
 ```java
 public LoginDto login(String customer_no, String name, String pwd, String timeZone) {
 		LoginDto loginDto = new LoginDto();
@@ -59,7 +60,9 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 		return loginDto;
 	}
 ```
+
 HttpClientUtil.java
+
 ```java
 public class HttpClientUtil {
     public static String[] httpPost(CloseableHttpClient client, String url, Map<String, String> map) throws IOException {
@@ -110,6 +113,7 @@ public class HttpClientUtil {
 最终我放弃了用webservice的方法来做登录，而是直接用ajax跨域访问登录action的url，并传入登录参数，终于解决了问题。
 
 主要代码如下：
+
 ```javascript
 $(document).ready(function() {
     var d = new Date();
