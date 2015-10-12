@@ -12,7 +12,8 @@ tags : []
 
 于是我便想到用apache的httpclient 4.3包来做。利用httpclient模拟浏览器给目标系统的登录action发送post/get请求，请求成功后，会返回一个response。response中包含了登录结果json，以及服务器的jsessionid。如果成功，我将 ;jsessionid=xxx添加到首页的url后面，作为最终成功的url返回。在浏览器输入该url后，则可达到单点登录的效果。
 
-```java
+
+<pre>
 <code>
 public LoginDto login(String customer_no, String name, String pwd, String timeZone) {
 		LoginDto loginDto = new LoginDto();
@@ -61,11 +62,11 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 		return loginDto;
 	}	
 </code>
-```
+</pre>
 
 HttpClientUtil.java
 
-```java
+<pre>
 <code>
 public class HttpClientUtil {
     public static String[] httpPost(CloseableHttpClient client, String url, Map<String, String> map) throws IOException {
@@ -108,7 +109,7 @@ public class HttpClientUtil {
 	}
 }
 </code>
-```
+</pre>
 
 一开始这个方法貌似是可行的，可是测试的时候发现一个缺陷。由于在成功url后面加上了jsessionid，那么浏览器会自动将这个sessionid存储到浏览器cookie中，而这个cookie的有效时间直到浏览器会话结束。也就是说，登录了一个用户，再次登录另一个用户时，如果不关闭浏览器重新启动，则这个浏览器的jsession的值一直不会变，而服务端的sessionid已经改变了。所以会产生切换用户登录时，不关闭浏览器就无法登录的问题。
 
@@ -118,7 +119,7 @@ public class HttpClientUtil {
 
 主要代码如下：
 
-```javascript
+<pre>
 <code>
 $(document).ready(function() {
     var d = new Date();
@@ -142,6 +143,6 @@ $(document).ready(function() {
     window.open("http://xxxx:7001/welcome.jsp");
 }
 </code>
-```
+</pre>
 
 呜呼，蜀道之难，难于上青天。
