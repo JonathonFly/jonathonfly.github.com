@@ -1,0 +1,137 @@
+---
+layout: post
+category : Java
+tagline: 
+tags : []
+---
+{% include JB/setup %}
+
+最近在做一个门户项目，有一个模块是统一登录。即需要将其他一些系统对接到门户中来，实现一个单点登录功能，只要在门户中登录过，可直接跳转到对应系统中去。
+
+受另一个项目的影响，一开始我打算用webservice写一个登录接口，输入参数是用户名、密码等信息，返回参数是是否成功、成功的url。
+
+于是我便想到用apache的httpclient 4.3包来做。利用httpclient模拟浏览器给目标系统的登录action发送post/get请求，请求成功后，会返回一个response。response中包含了登录结果json，以及服务器的jsessionid。如果成功，我将 ;jsessionid=xxx添加到首页的url后面，作为最终成功的url返回。在浏览器输入该url后，则可达到单点登录的效果。
+```java
+public LoginDto login(String customer_no, String name, String pwd, String timeZone) {
+		LoginDto loginDto = new LoginDto();
+		CloseableHttpClient client = HttpClients.createDefault();
+		String[] result = new String[3];
+		try {
+			HashMap<String, String> parames = new HashMap<String, String>();
+			parames.put("customer_no", customer_no);
+			parames.put("name", name);
+			parames.put("pwd", pwd);
+			parames.put("timeZone", timeZone);
+			String loginUrl=netcarev5LoginUrl;
+			
+			//httppost and results. 
+			//result[0]=httpstatus, result[1]=
+			result = HttpClientUtil.httpPost(client, loginUrl, parames);
+			JSONObject jsonobject = JSONObject.fromObject(result[1]);
+			Map<String, Object> mapJson = JSONObject.fromObject(jsonobject);
+			Boolean token = (Boolean) mapJson.get("result");
+			
+			
+			if (token.equals(true)) {
+			    //success
+				loginDto.setIsSuccess("true");
+				String url = netcarev5_success_url;
+				if (result[2] != null && !result[2].equals(""))
+					url = url + ";JSESSIONID=" + result[2] + "";
+				loginDto.setWelcomeUrl(url);
+				logger.info("Login Sucess!   SuccessUrl="+url);  
+			} else {
+			    //failure
+				loginDto.setIsSuccess("false");
+				loginDto.setWelcomeUrl("");
+				logger.info("Login Fail!");  
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+			    //close client
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return loginDto;
+	}
+```
+HttpClientUtil.java
+```java
+public class HttpClientUtil {
+    public static String[] httpPost(CloseableHttpClient client, String url, Map<String, String> map) throws IOException {
+		String[] result = new String[3];
+		String temp = "";
+		HttpPost httppost = new HttpPost(url);
+		// httppost
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		// post params
+		if (map != null && map.size() > 0) {
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+			}
+			// add params
+			httppost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+		}
+		// encoding
+		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(params, "UTF-8");
+		httppost.setEntity(postEntity);
+
+        // excute httppost and get response.
+		HttpResponse response = client.execute(httppost);
+		
+		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+		    //if httpstatus equals 200.
+			result[0] = "200";
+			result[1] = EntityUtils.toString(response.getEntity());// response result json
+
+            //get jsessionid.
+			if (response.containsHeader("Set-Cookie")) {
+				String setCookie = response.getFirstHeader("Set-Cookie").getValue();
+				System.out.println(setCookie);
+				String JSESSIONID = setCookie.substring("JSESSIONID=".length(), setCookie.indexOf(";"));
+				result[2] = JSESSIONID;
+			}
+		}
+
+
+		return result;
+	}
+}
+```
+
+一开始这个方法貌似是可行的，可是测试的时候发现一个缺陷。由于在成功url后面加上了jsessionid，那么浏览器会自动将这个sessionid存储到浏览器cookie中，而这个cookie的有效时间直到浏览器会话结束。也就是说，登录了一个用户，再次登录另一个用户时，如果不关闭浏览器重新启动，则这个浏览器的jsession的值一直不会变，而服务端的sessionid已经改变了。所以会产生切换用户登录时，不关闭浏览器就无法登录的问题。
+
+我尝试给定一个固定的jsessionid，是所有用户登录都用同一个sessionid，这样切换用户时可以保证服务端的和浏览器端的sessionid一致。但是如何形成这第一个sessionid又成了问题，随便写的sessionid服务端是不会认的。
+
+最终我放弃了用webservice的方法来做登录，而是直接用ajax跨域访问登录action的url，并传入登录参数，终于解决了问题。
+
+主要代码如下：
+```javascript
+$(document).ready(function() {
+    var d = new Date();
+    var param = {
+    	name : 'xxx',
+    	pwd : 'xxx',
+    	customer_no : 'xxx',
+    	timeZone : d.getTimezoneOffset()
+    };	
+    var url = 'http://xxxx:7001/login/auth-login.action';
+    $.ajax(url, {
+        async:false,
+        data:param,
+        dataType: 'jsonp',
+        crossDomain: true,
+        success: function(data) {
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        },
+    }); 
+    window.open("http://xxxx:7001/welcome.jsp");
+}
+```
+
+呜呼，蜀道之难，难于上青天。
