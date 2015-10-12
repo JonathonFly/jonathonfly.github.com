@@ -64,7 +64,9 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 </code>
 </pre>
 
+
 HttpClientUtil.java
+
 
 <pre>
 <code>
@@ -110,6 +112,7 @@ public class HttpClientUtil {
 }
 </code>
 </pre>
+
 
 一开始这个方法貌似是可行的，可是测试的时候发现一个缺陷。由于在成功url后面加上了jsessionid，那么浏览器会自动将这个sessionid存储到浏览器cookie中，而这个cookie的有效时间直到浏览器会话结束。也就是说，登录了一个用户，再次登录另一个用户时，如果不关闭浏览器重新启动，则这个浏览器的jsession的值一直不会变，而服务端的sessionid已经改变了。所以会产生切换用户登录时，不关闭浏览器就无法登录的问题。
 
