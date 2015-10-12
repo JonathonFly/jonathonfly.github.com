@@ -25,9 +25,13 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 			parames.put("pwd", pwd);
 			parames.put("timeZone", timeZone);
 			String loginUrl=netcarev5LoginUrl;
+
+```	
+
+	
+```java
 			
 			//httppost and results. 
-			//result[0]=httpstatus, result[1]=
 			result = HttpClientUtil.httpPost(client, loginUrl, parames);
 			JSONObject jsonobject = JSONObject.fromObject(result[1]);
 			Map<String, Object> mapJson = JSONObject.fromObject(jsonobject);
@@ -85,6 +89,10 @@ public class HttpClientUtil {
 		// encoding
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(params, "UTF-8");
 		httppost.setEntity(postEntity);
+
+```
+
+```java
 
         // excute httppost and get response.
 		HttpResponse response = client.execute(httppost);
