@@ -33,14 +33,11 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 			parames.put("pwd", pwd);
 			parames.put("timeZone", timeZone);
 			String loginUrl=netcarev5LoginUrl;
-			
 			//httppost and results. 
 			result = HttpClientUtil.httpPost(client, loginUrl, parames);
 			JSONObject jsonobject = JSONObject.fromObject(result[1]);
 			Map<String, Object> mapJson = JSONObject.fromObject(jsonobject);
 			Boolean token = (Boolean) mapJson.get("result");
-			
-			
 			if (token.equals(true)) {
 			    //success
 				loginDto.setIsSuccess("true");
@@ -101,15 +98,12 @@ public class HttpClientUtil {
 		// encoding
 		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(params, "UTF-8");
 		httppost.setEntity(postEntity);
-
         // excute httppost and get response.
 		HttpResponse response = client.execute(httppost);
-		
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 		    //if httpstatus equals 200.
 			result[0] = "200";
 			result[1] = EntityUtils.toString(response.getEntity());// response result json
-
             //get jsessionid.
 			if (response.containsHeader("Set-Cookie")) {
 				String setCookie = response.getFirstHeader("Set-Cookie").getValue();
@@ -118,8 +112,6 @@ public class HttpClientUtil {
 				result[2] = JSESSIONID;
 			}
 		}
-
-
 		return result;
 	}
 }
