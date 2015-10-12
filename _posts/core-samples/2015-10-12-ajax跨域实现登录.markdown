@@ -61,55 +61,6 @@ tags : []
 </pre></div>
 
 
-```java
-public LoginDto login(String customer_no, String name, String pwd, String timeZone) {
-		LoginDto loginDto = new LoginDto();
-		CloseableHttpClient client = HttpClients.createDefault();
-		String[] result = new String[3];
-		try {
-			HashMap<String, String> parames = new HashMap<String, String>();
-			parames.put("customer_no", customer_no);
-			parames.put("name", name);
-			parames.put("pwd", pwd);
-			parames.put("timeZone", timeZone);
-			String loginUrl=netcarev5LoginUrl;
-			
-			//httppost and results. 
-			result = HttpClientUtil.httpPost(client, loginUrl, parames);
-			JSONObject jsonobject = JSONObject.fromObject(result[1]);
-			Map<String, Object> mapJson = JSONObject.fromObject(jsonobject);
-			Boolean token = (Boolean) mapJson.get("result");
-			
-			
-			if (token.equals(true)) {
-			    //success
-				loginDto.setIsSuccess("true");
-				String url = netcarev5_success_url;
-				if (result[2] != null && !result[2].equals(""))
-					url = url + ";JSESSIONID=" + result[2] + "";
-				loginDto.setWelcomeUrl(url);
-				logger.info("Login Sucess!   SuccessUrl="+url);  
-			} else {
-			    //failure
-				loginDto.setIsSuccess("false");
-				loginDto.setWelcomeUrl("");
-				logger.info("Login Fail!");  
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-			    //close client
-				client.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return loginDto;
-	}
-	
-```
-
 
 <div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">HttpClientUtil</span> {
     <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">String</span>[] <span class="pl-en">httpPost</span>(<span class="pl-smi">CloseableHttpClient</span> <span class="pl-v">client</span>, <span class="pl-smi">String</span> <span class="pl-v">url</span>, <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">String</span>&gt;</span> <span class="pl-v">map</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span> {
@@ -154,50 +105,6 @@ public LoginDto login(String customer_no, String name, String pwd, String timeZo
 </pre></div>
 
 
-```java
-
-public class HttpClientUtil {
-    public static String[] httpPost(CloseableHttpClient client, String url, Map<String, String> map) throws IOException {
-		String[] result = new String[3];
-		String temp = "";
-		HttpPost httppost = new HttpPost(url);
-		// httppost
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// post params
-		if (map != null && map.size() > 0) {
-			for (Map.Entry<String, String> entry : map.entrySet()) {
-				params.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-			}
-			// add params
-			httppost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-		}
-		// encoding
-		UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(params, "UTF-8");
-		httppost.setEntity(postEntity);
-
-        // excute httppost and get response.
-		HttpResponse response = client.execute(httppost);
-		
-		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-		    //if httpstatus equals 200.
-			result[0] = "200";
-			result[1] = EntityUtils.toString(response.getEntity());// response result json
-
-            //get jsessionid.
-			if (response.containsHeader("Set-Cookie")) {
-				String setCookie = response.getFirstHeader("Set-Cookie").getValue();
-				System.out.println(setCookie);
-				String JSESSIONID = setCookie.substring("JSESSIONID=".length(), setCookie.indexOf(";"));
-				result[2] = JSESSIONID;
-			}
-		}
-
-
-		return result;
-	}
-}
-
-```
 
 一开始这个方法貌似是可行的，可是测试的时候发现一个缺陷。由于在成功url后面加上了jsessionid，那么浏览器会自动将这个sessionid存储到浏览器cookie中，而这个cookie的有效时间直到浏览器会话结束。也就是说，登录了一个用户，再次登录另一个用户时，如果不关闭浏览器重新启动，则这个浏览器的jsession的值一直不会变，而服务端的sessionid已经改变了。所以会产生切换用户登录时，不关闭浏览器就无法登录的问题。
 
@@ -230,28 +137,5 @@ public class HttpClientUtil {
 }
 </pre></div>
 
-```javascript
-$(document).ready(function() {
-    var d = new Date();
-    var param = {
-    	name : 'xxx',
-    	pwd : 'xxx',
-    	customer_no : 'xxx',
-    	timeZone : d.getTimezoneOffset()
-    };	
-    var url = 'http://xxxx:7001/login/auth-login.action';
-    $.ajax(url, {
-        async:false,
-        data:param,
-        dataType: 'jsonp',
-        crossDomain: true,
-        success: function(data) {
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-        },
-    }); 
-    window.open("http://xxxx:7001/welcome.jsp");
-}
-```
 
 呜呼，蜀道之难，难于上青天。
