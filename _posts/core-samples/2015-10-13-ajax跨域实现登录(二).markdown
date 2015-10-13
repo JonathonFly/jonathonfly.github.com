@@ -14,61 +14,57 @@ tags : []
 
 如何解决呢？第一反应，在ajax调用之后，打开新页面之前，等待一段时间。具体代码如下：
 
+<div class="highlight highlight-source-js"><pre>    <span class="pl-k">function</span> <span class="pl-en">openUrl</span>() {
+        <span class="pl-c1">window</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>http://xxxx:7001/welcome.jsp<span class="pl-pds">"</span></span>);
+    }
 
-```javascript
-    function openUrl() {
-		window.open("http://xxxx:7001/welcome.jsp");
-	}
+    <span class="pl-k">function</span> <span class="pl-en">login</span>() {
+        <span class="pl-k">var</span> d <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Date</span>();
+        <span class="pl-k">var</span> param <span class="pl-k">=</span> {
+            name <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+            pwd <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+            customer_no <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+            timeZone <span class="pl-k">:</span> d.<span class="pl-c1">getTimezoneOffset</span>()
+        };
+        <span class="pl-k">var</span> url <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://xxxx:7001/login/auth-login.action<span class="pl-pds">'</span></span>;
 
-	function login() {
-		var d = new Date();
-		var param = {
-			name : 'xxx',
-			pwd : 'xxx',
-			customer_no : 'xxx',
-			timeZone : d.getTimezoneOffset()
-		};
-		var url = 'http://xxxx:7001/login/auth-login.action';
-		
-		$.ajax(url, {
-			async : false,
-			data : param,
-			dataType : 'jsonp',
-			crossDomain : true,
-			success : function(data) {
-			},
-			error : function(XMLHttpRequest, textStatus, errorThrown) {
-			},
-		});
-	}
-	
+        $.ajax(url, {
+            async <span class="pl-k">:</span> <span class="pl-c1">false</span>,
+            data <span class="pl-k">:</span> param,
+            dataType <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>jsonp<span class="pl-pds">'</span></span>,
+            crossDomain <span class="pl-k">:</span> <span class="pl-c1">true</span>,
+            <span class="pl-en">success</span> <span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">data</span>) {
+            },
+            <span class="pl-en">error</span> <span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">XMLHttpRequest</span>, <span class="pl-smi">textStatus</span>, <span class="pl-smi">errorThrown</span>) {
+            },
+        });
+    }
+
     login();
-	setTimeout("openUrl()", 400);
-```
+    <span class="pl-c1">setTimeout</span>(<span class="pl-s"><span class="pl-pds">"</span>openUrl()<span class="pl-pds">"</span></span>, <span class="pl-c1">400</span>);</pre></div>
+
 
 根据网络状况不同，固定的等待时间势必不可靠，导致登录可能有效，也可能失效。那么这种方法就不能接受。
 
 那么，还有什么解决方法呢？其实，只要让 openurl()方法 在 login()方法 之后执行，那就肯定不会有问题。解决问题的代码如下：
 
-```javascript
-    var d = new Date();
-	var url = 'http://xxxx:7001/login/auth-login.action';
-	var param = {
-		name : 'xxx',
-		pwd : 'xxx',
-		customer_no : 'xxx',
-		timeZone : d.getTimezoneOffset()
-	};
-	$.when($.ajax(url, {
-		async : false,
-		data : param,
-		dataType : 'jsonp',
-		crossDomain : true
-	}).done(function(data) {
-		window.open("http://xxxx:7001/welcome.jsp");
-	}).fail(function(reason) {
-		window.open("http://xxxx:7001/welcome.jsp");
-	}));
-```
+<div class="highlight highlight-source-js"><pre>    <span class="pl-k">var</span> d <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Date</span>();
+    <span class="pl-k">var</span> url <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://xxxx:7001/login/auth-login.action<span class="pl-pds">'</span></span>;
+    <span class="pl-k">var</span> param <span class="pl-k">=</span> {
+        name <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+        pwd <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+        customer_no <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+        timeZone <span class="pl-k">:</span> d.<span class="pl-c1">getTimezoneOffset</span>()
+    };
+    $.when($.ajax(url, {
+        async <span class="pl-k">:</span> <span class="pl-c1">false</span>,
+        data <span class="pl-k">:</span> param,
+        dataType <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>jsonp<span class="pl-pds">'</span></span>,
+        crossDomain <span class="pl-k">:</span> <span class="pl-c1">true</span>
+    }).done(<span class="pl-k">function</span>(<span class="pl-smi">data</span>) {
+        <span class="pl-c1">window</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>http://xxxx:7001/welcome.jsp<span class="pl-pds">"</span></span>);
+    }).fail(<span class="pl-k">function</span>(<span class="pl-smi">reason</span>) {
+        <span class="pl-c1">window</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>http://xxxx:7001/welcome.jsp<span class="pl-pds">"</span></span>);
+    }));</pre></div>
 
 利用jquery的when函数，执行成功进入done，执行失败进入fail。为什么我不直接在执行成功的函数里判断跳转，执行失败跳转到登录页？因为ajax调用此次都返回fail，但其实服务端已经登录了，只是结果json并没有被接收到。但不论结果是什么，只要跳转到主页肯定没问题。因为如果是登录状态，那么就正常显示主页；反之，则显示登录页。
