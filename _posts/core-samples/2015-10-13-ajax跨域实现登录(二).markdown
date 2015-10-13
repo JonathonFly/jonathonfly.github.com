@@ -1,0 +1,74 @@
+---
+layout: post
+category : Java
+tagline: 
+tags : []
+---
+{% include JB/setup %}
+
+上一篇讲到用ajax实现跨域登录，经过测试，发现存在一个问题。
+
+    window.open("http://xxxx:7001/welcome.jsp");
+    
+按照预想的，上面那句代码要在ajax调用结束后再执行。可实际运行中发现，window.open总是等不到ajax调用结束，就先行执行了。导致的结果是，第一次登录不上，必须再重新刷新一边才能登录。
+
+如何解决呢？第一反应，在ajax调用之后，打开新页面之前，等待一段时间。具体代码如下：
+
+
+```javascript
+    function openUrl() {
+		window.open("http://xxxx:7001/welcome.jsp");
+	}
+
+	function login() {
+		var d = new Date();
+		var param = {
+			name : 'xxx',
+			pwd : 'xxx',
+			customer_no : 'xxx',
+			timeZone : d.getTimezoneOffset()
+		};
+		var url = 'http://xxxx:7001/login/auth-login.action';
+		
+		$.ajax(url, {
+			async : false,
+			data : param,
+			dataType : 'jsonp',
+			crossDomain : true,
+			success : function(data) {
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+			},
+		});
+	}
+	
+    login();
+	setTimeout("openUrl()", 400);
+```
+
+根据网络状况不同，固定的等待时间势必不可靠，导致登录可能有效，也可能失效。那么这种方法就不能接受。
+
+那么，还有什么解决方法呢？其实，只要让 openurl()方法 在 login()方法 之后执行，那就肯定不会有问题。解决问题的代码如下：
+
+```javascript
+    var d = new Date();
+	var url = 'http://xxxx:7001/login/auth-login.action';
+	var param = {
+		name : 'xxx',
+		pwd : 'xxx',
+		customer_no : 'xxx',
+		timeZone : d.getTimezoneOffset()
+	};
+	$.when($.ajax(url, {
+		async : false,
+		data : param,
+		dataType : 'jsonp',
+		crossDomain : true
+	}).done(function(data) {
+		window.open("http://xxxx:7001/welcome.jsp");
+	}).fail(function(reason) {
+		window.open("http://xxxx:7001/welcome.jsp");
+	}));
+```
+
+利用jquery的when函数，执行成功进入done，执行失败进入fail。为什么我不直接在执行成功的函数里判断跳转，执行失败跳转到登录页？因为ajax调用此次都返回fail，但其实服务端已经登录了，只是结果json并没有被接收到。但不论结果是什么，只要跳转到主页肯定没问题。因为如果是登录状态，那么就正常显示主页；反之，则显示登录页。
