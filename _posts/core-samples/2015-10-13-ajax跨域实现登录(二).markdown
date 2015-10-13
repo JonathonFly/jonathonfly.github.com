@@ -67,4 +67,4 @@ tags : []
         <span class="pl-c1">window</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>http://xxxx:7001/welcome.jsp<span class="pl-pds">"</span></span>);
     }));</pre></div>
 
-利用jquery的when函数，执行成功进入done，执行失败进入fail。为什么我不根据返回值在执行成功的函数里判断跳转到首页，执行失败跳转到登录页？因为ajax调用每次都进入fail，但其实服务端已经登录了，只是结果json并没有被接收到。但不论结果是什么，只要跳转到主页肯定没问题。因为如果是登录状态，那么就正常显示主页；反之，则显示登录页。
+利用jquery的when函数，执行成功进入done，执行失败进入fail。为什么我不根据返回值在执行成功的函数里判断跳转呢？因为ajax调用每次都进入fail，但其实服务端已经登录了，只是结果json并没有被接收到。但不论结果是什么，只要跳转到主页肯定没问题。因为如果是登录状态，那么就正常显示主页；反之，则显示登录页。
