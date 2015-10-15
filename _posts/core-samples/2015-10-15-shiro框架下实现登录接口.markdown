@@ -1,0 +1,315 @@
+---
+layout: post
+category : Java
+tagline: 
+tags : []
+---
+{% include JB/setup %}
+
+之前一直做的一个平台接口，最近又添加了一些需求，其中包括一个登录接口。
+
+系统使用的是apache shiro框架做的登录认证和授权。一开始想直接用个post请求访问登录action，结果发现验证码绕不过去。只能放弃原来的登录action，重写一个给远程调用。
+
+applicationContext-shiro.xml
+
+```xml
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+	default-lazy-init="true">
+
+	<description>Shiro Configuration</description>
+
+	<!-- Shiro's main business-tier object for web-enabled applications -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="shiroDbRealm" />
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+
+	<bean id="shiroDbRealm" class="com.test.common.utils.ShiroDbRealm">
+		<property name="userService" ref="userService" />
+	</bean>
+
+	<!-- Shiro Filter -->
+	<bean id="hxCaptchaFilter" class="com.test.common.utils.FormAuthenticationCaptchaFilter"/>
+	
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/login.do" />
+		<property name="successUrl" value="/index.do" />
+		<property name="filters">
+		    <map>
+		        <entry key="authc" value-ref="hxCaptchaFilter"/>
+		    </map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/login.do = authc
+				/loginsso.do = anon
+				/logout.do = logout
+				/change.do = anon
+				/getToken.do = anon
+				/error/* = anon
+				/servlet/* = anon
+				/messagebroker/* = anon
+				/images/** = anon
+				/inc/** = anon
+				/js/** = anon
+				/css/** = anon
+				/uncertain/** = anon
+				/favicon.ico = anon
+				/** = user
+			</value>
+		</property>
+	</bean>
+
+	<!-- Cache -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+
+
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!-- AOP -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="false" />
+	</bean>
+
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+</beans>
+```
+
+applicationContext-shiro.xml中的 filterChainDefinitions 添加一个配置 /loginsso.do = anon ，loginsso.do 就是远程登录要调用的方法。 authc 表示会被拦截器拦截，进入登录认证过程。而 anon 表示不需要登录认证，可以直接访问。
+
+登录认证要经过shiroDbRealm，验证码校验就是在这个Realm中做的。那么如何绕过去呢？只要在登录的token中添加一个参数loginType，当loginType不为空时，跳过验证码校验。
+
+UsernamePasswordCaptchaToken.java
+
+```java
+public class UsernamePasswordCaptchaToken extends UsernamePasswordToken {
+
+	private static final long serialVersionUID = 1L;
+
+	private String customerNo;
+
+	private String captcha;
+
+	private String timeZone;
+
+	private String language;
+
+	private String csrftoken;
+	
+	private String loginType;
+
+	private Boolean mockFlag;
+
+	public String getCustomerNo() {
+		return customerNo;
+	}
+
+	public void setCustomerNo(String customerNo) {
+		this.customerNo = customerNo;
+	}
+
+	public String getCaptcha() {
+		return captcha;
+	}
+
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
+	}
+
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public Boolean getMockFlag() {
+		return mockFlag;
+	}
+
+	public void setMockFlag(Boolean mockFlag) {
+		this.mockFlag = mockFlag;
+	}
+
+	public String getCsrftoken() {
+		return csrftoken;
+	}
+
+	public void setCsrftoken(String csrftoken) {
+		this.csrftoken = csrftoken;
+	}
+	
+	public String getLoginType() {
+		return loginType;
+	}
+
+	public void setLoginType(String loginType) {
+		this.loginType = loginType;
+	}
+
+	public UsernamePasswordCaptchaToken() {
+		super();
+	}
+
+	public UsernamePasswordCaptchaToken(String username, char[] password, boolean rememberMe, String host,
+			String customerNo, String captcha, String timeZone, String language, String csrftoken, Boolean mockFlag,String loginType) {
+		super.setUsername(username.toLowerCase());
+		super.setPassword(password);
+		super.setRememberMe(rememberMe);
+		super.setHost(host);
+		this.customerNo = customerNo;
+		this.captcha = captcha;
+		this.timeZone = timeZone;
+		this.language = language;
+		this.mockFlag = mockFlag;
+		this.csrftoken = csrftoken;
+		this.loginType = loginType;
+	}
+}
+```
+
+ShiroDbRealm.java中登录认证的方法。
+
+```java
+protected AuthenticationInfo doGetAuthenticationInfo(
+			AuthenticationToken authcToken) throws AuthenticationException {
+
+		UsernamePasswordCaptchaToken token = (UsernamePasswordCaptchaToken) authcToken;
+
+		Boolean mockFlag = token.getMockFlag();
+
+		String timeZone = token.getTimeZone();
+
+		String language = token.getLanguage();
+
+		String captcha = token.getCaptcha();
+		// token
+		String csrftoken = token.getCsrftoken();
+
+		String loginType = token.getLoginType();
+		if (mockFlag) {
+			User mockUser = userService.login(token.getCustomerNo(), "admin");
+			return new SimpleAuthenticationInfo(new ShiroUser(mockUser,
+					timeZone, language, mockFlag), token.getPassword(),
+					getName());
+		}
+
+		if (loginType == null || loginType.equals("")) {
+			Session session = SecurityUtils.getSubject().getSession();
+			String tokenValue = (String) session.getAttribute("csrftoken");
+			if (null == tokenValue || !tokenValue.equals(csrftoken)) {
+				throw new TokenException("failure");
+			}
+			SecurityUtils.getSubject().getSession()
+					.removeAttribute("csrftoken");
+
+			String exitCode = (String) SecurityUtils.getSubject().getSession()
+					.getAttribute(CaptchaServlet.KEY_CAPTCHA);
+			if (null == captcha || !captcha.equalsIgnoreCase(exitCode)) {
+				throw new CaptchaException("wrong captcha");
+			}
+		}
+
+		String username = token.getUsername();
+		if (username == null) {
+			throw new AccountException(
+					"Null usernames are not allowed by this realm.");
+		}
+
+		String customerNo = token.getCustomerNo();
+		if (customerNo == null) {
+			throw new AccountException(
+					"Null customerNo are not allowed by this realm.");
+		}
+
+		User user = userService.login(customerNo, username);
+
+		if (null == user) {
+			throw new UnknownAccountException("No account found for user ["
+					+ username + "]");
+		}
+
+		ShiroUser shiroUser = new ShiroUser(user, timeZone, language,
+				Boolean.FALSE);
+
+		return new SimpleAuthenticationInfo(shiroUser, user.getPwd(), getName());
+
+	}
+```
+
+然后，将loginsso.do方法中，获取页面中上的数据，构造一个token，再调用subject的login方法，就能实现登录了。
+
+```java
+@RequestMapping(value = "/loginsso.do", method = RequestMethod.GET)
+	public String loginSSO(HttpServletRequest req) {
+		Subject currentUser = SecurityUtils.getSubject();
+		UsernamePasswordCaptchaToken token = new UsernamePasswordCaptchaToken();
+		if (req.getParameter("username") != null)
+			token.setUsername(req.getParameter("username").toString());
+		if (req.getParameter("customerNo") != null)
+			token.setCustomerNo(req.getParameter("customerNo").toString());
+		if (req.getParameter("password") != null)
+			token.setPassword(CipherUtil.generatePassword(
+					req.getParameter("password").toString()).toCharArray());				
+		token.setLoginType("sso");
+		token.setMockFlag(false);
+		if (req.getParameter("captcha") != null)
+			token.setCaptcha(req.getParameter("captcha").toString());
+		if (req.getParameter("csrftoken") != null)
+			token.setCsrftoken(req.getParameter("csrftoken").toString());
+		if (req.getParameter("language") != null)
+			token.setLanguage(req.getParameter("language").toString());
+		token.setTimeZone(null);
+		if (req.getParameter("host") != null)
+			token.setHost(req.getParameter("host").toString());
+		token.setRememberMe(false);
+		currentUser.login(token);
+		if (currentUser.isAuthenticated()) {
+			return "redirect:/index.do";
+		}
+		return "login";
+	}
+```
+
+最后，利用ajax跨域调用，实现远程登录。
+
+```javascript
+    var url = 'http://xxxx:8080/xxx/loginsso.do';
+	var param = {
+			customerNo : 'xxx',
+			username : 'xxx',
+			password : 'xxx'
+		};
+		$.when($.ajax(url, {
+			async : false,
+			data : param,
+			dataType : 'jsonp',
+			crossDomain : true
+		}).done(function(data) {
+			window.open("http://xxxx:8080/xxx/index.do");
+		}).fail(function(reason) {
+			window.open("http://xxxx:8080/xxx/index.do");
+		}));
+```
+
+
+至于之后的用户名用AES加密传递，密码用MD5加密传递，就等接口调用方给到具体的加密方式了。就到这里了，应该不用再写登录接口了 -_-!
