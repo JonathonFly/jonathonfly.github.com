@@ -10,306 +10,306 @@ tags : []
 
 系统使用的是apache shiro框架做的登录认证和授权。一开始想直接用个post请求访问登录action，结果发现验证码绕不过去。只能放弃原来的登录action，重写一个给远程调用。
 
+
 applicationContext-shiro.xml
 
-```xml
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
-	default-lazy-init="true">
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">beans</span> <span class="pl-e">xmlns</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.springframework.org/schema/beans<span class="pl-pds">"</span></span>
+    <span class="pl-e">xmlns</span><span class="pl-e">:</span><span class="pl-e">xsi</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="pl-pds">"</span></span>
+    <span class="pl-e">xsi</span><span class="pl-e">:</span><span class="pl-e">schemaLocation</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd<span class="pl-pds">"</span></span>
+    <span class="pl-e">default-lazy-init</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>&gt;
 
-	<description>Shiro Configuration</description>
+    &lt;<span class="pl-ent">description</span>&gt;Shiro Configuration&lt;/<span class="pl-ent">description</span>&gt;
 
-	<!-- Shiro's main business-tier object for web-enabled applications -->
-	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="shiroDbRealm" />
-		<property name="cacheManager" ref="cacheManager" />
-	</bean>
-
-
-	<bean id="shiroDbRealm" class="com.test.common.utils.ShiroDbRealm">
-		<property name="userService" ref="userService" />
-	</bean>
-
-	<!-- Shiro Filter -->
-	<bean id="hxCaptchaFilter" class="com.test.common.utils.FormAuthenticationCaptchaFilter"/>
-	
-	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-		<property name="securityManager" ref="securityManager" />
-		<property name="loginUrl" value="/login.do" />
-		<property name="successUrl" value="/index.do" />
-		<property name="filters">
-		    <map>
-		        <entry key="authc" value-ref="hxCaptchaFilter"/>
-		    </map>
-		</property>
-		<property name="filterChainDefinitions">
-			<value>
-				/login.do = authc
-				/loginsso.do = anon
-				/logout.do = logout
-				/change.do = anon
-				/getToken.do = anon
-				/error/* = anon
-				/servlet/* = anon
-				/messagebroker/* = anon
-				/images/** = anon
-				/inc/** = anon
-				/js/** = anon
-				/css/** = anon
-				/uncertain/** = anon
-				/favicon.ico = anon
-				/** = user
-			</value>
-		</property>
-	</bean>
-
-	<!-- Cache -->
-	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+    <span class="pl-c">&lt;!-- Shiro's main business-tier object for web-enabled applications --&gt;</span>
+    &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>securityManager<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.apache.shiro.web.mgt.DefaultWebSecurityManager<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>realm<span class="pl-pds">"</span></span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>shiroDbRealm<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>cacheManager<span class="pl-pds">"</span></span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>cacheManager<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">bean</span>&gt;
 
 
-	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+    &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>shiroDbRealm<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.test.common.utils.ShiroDbRealm<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>userService<span class="pl-pds">"</span></span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>userService<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">bean</span>&gt;
 
-	<!-- AOP -->
-	<bean
-		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
-		depends-on="lifecycleBeanPostProcessor">
-		<property name="proxyTargetClass" value="false" />
-	</bean>
+    <span class="pl-c">&lt;!-- Shiro Filter --&gt;</span>
+    &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>hxCaptchaFilter<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.test.common.utils.FormAuthenticationCaptchaFilter<span class="pl-pds">"</span></span>/&gt;
 
-	<bean
-		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
-		<property name="securityManager" ref="securityManager" />
-	</bean>
-</beans>
-```
+    &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>shiroFilter<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.apache.shiro.spring.web.ShiroFilterFactoryBean<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>securityManager<span class="pl-pds">"</span></span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>securityManager<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>loginUrl<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>/login.do<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>successUrl<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>/index.do<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>filters<span class="pl-pds">"</span></span>&gt;
+            &lt;<span class="pl-ent">map</span>&gt;
+                &lt;<span class="pl-ent">entry</span> <span class="pl-e">key</span>=<span class="pl-s"><span class="pl-pds">"</span>authc<span class="pl-pds">"</span></span> <span class="pl-e">value-ref</span>=<span class="pl-s"><span class="pl-pds">"</span>hxCaptchaFilter<span class="pl-pds">"</span></span>/&gt;
+            &lt;/<span class="pl-ent">map</span>&gt;
+        &lt;/<span class="pl-ent">property</span>&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>filterChainDefinitions<span class="pl-pds">"</span></span>&gt;
+            &lt;<span class="pl-ent">value</span>&gt;
+                /login.do = authc
+                /loginsso.do = anon
+                /logout.do = logout
+                /change.do = anon
+                /getToken.do = anon
+                /error/* = anon
+                /servlet/* = anon
+                /messagebroker/* = anon
+                /images/** = anon
+                /inc/** = anon
+                /js/** = anon
+                /css/** = anon
+                /uncertain/** = anon
+                /favicon.ico = anon
+                /** = user
+            &lt;/<span class="pl-ent">value</span>&gt;
+        &lt;/<span class="pl-ent">property</span>&gt;
+    &lt;/<span class="pl-ent">bean</span>&gt;
+
+    <span class="pl-c">&lt;!-- Cache --&gt;</span>
+    &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>cacheManager<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.apache.shiro.cache.MemoryConstrainedCacheManager<span class="pl-pds">"</span></span> /&gt;
+
+
+    &lt;<span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>lifecycleBeanPostProcessor<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.apache.shiro.spring.LifecycleBeanPostProcessor<span class="pl-pds">"</span></span> /&gt;
+
+    <span class="pl-c">&lt;!-- AOP --&gt;</span>
+    &lt;<span class="pl-ent">bean</span>
+        <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator<span class="pl-pds">"</span></span>
+        <span class="pl-e">depends-on</span>=<span class="pl-s"><span class="pl-pds">"</span>lifecycleBeanPostProcessor<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>proxyTargetClass<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">bean</span>&gt;
+
+    &lt;<span class="pl-ent">bean</span>
+        <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>securityManager<span class="pl-pds">"</span></span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>securityManager<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">bean</span>&gt;
+&lt;/<span class="pl-ent">beans</span>&gt;</pre></div>
+
 
 applicationContext-shiro.xml中的 filterChainDefinitions 添加一个配置 /loginsso.do = anon ，loginsso.do 就是远程登录要调用的方法。 authc 表示会被拦截器拦截，进入登录认证过程。而 anon 表示不需要登录认证，可以直接访问。
 
 登录认证要经过shiroDbRealm，验证码校验就是在这个Realm中做的。那么如何绕过去呢？只要在登录的token中添加一个参数loginType，当loginType不为空时，跳过验证码校验。
 
+
 UsernamePasswordCaptchaToken.java
 
-```java
-public class UsernamePasswordCaptchaToken extends UsernamePasswordToken {
 
-	private static final long serialVersionUID = 1L;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">UsernamePasswordCaptchaToken</span> <span class="pl-k">extends</span> <span class="pl-e">UsernamePasswordToken</span> {
 
-	private String customerNo;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-k">long</span> serialVersionUID <span class="pl-k">=</span> <span class="pl-c1">1L</span>;
 
-	private String captcha;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> customerNo;
 
-	private String timeZone;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> captcha;
 
-	private String language;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> timeZone;
 
-	private String csrftoken;
-	
-	private String loginType;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> language;
 
-	private Boolean mockFlag;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> csrftoken;
 
-	public String getCustomerNo() {
-		return customerNo;
-	}
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> loginType;
 
-	public void setCustomerNo(String customerNo) {
-		this.customerNo = customerNo;
-	}
+    <span class="pl-k">private</span> <span class="pl-smi">Boolean</span> mockFlag;
 
-	public String getCaptcha() {
-		return captcha;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getCustomerNo</span>() {
+        <span class="pl-k">return</span> customerNo;
+    }
 
-	public void setCaptcha(String captcha) {
-		this.captcha = captcha;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setCustomerNo</span>(<span class="pl-smi">String</span> <span class="pl-v">customerNo</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>customerNo <span class="pl-k">=</span> customerNo;
+    }
 
-	public String getTimeZone() {
-		return timeZone;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getCaptcha</span>() {
+        <span class="pl-k">return</span> captcha;
+    }
 
-	public void setTimeZone(String timeZone) {
-		this.timeZone = timeZone;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setCaptcha</span>(<span class="pl-smi">String</span> <span class="pl-v">captcha</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>captcha <span class="pl-k">=</span> captcha;
+    }
 
-	public String getLanguage() {
-		return language;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getTimeZone</span>() {
+        <span class="pl-k">return</span> timeZone;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setTimeZone</span>(<span class="pl-smi">String</span> <span class="pl-v">timeZone</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>timeZone <span class="pl-k">=</span> timeZone;
+    }
 
-	public Boolean getMockFlag() {
-		return mockFlag;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getLanguage</span>() {
+        <span class="pl-k">return</span> language;
+    }
 
-	public void setMockFlag(Boolean mockFlag) {
-		this.mockFlag = mockFlag;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setLanguage</span>(<span class="pl-smi">String</span> <span class="pl-v">language</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>language <span class="pl-k">=</span> language;
+    }
 
-	public String getCsrftoken() {
-		return csrftoken;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">Boolean</span> <span class="pl-en">getMockFlag</span>() {
+        <span class="pl-k">return</span> mockFlag;
+    }
 
-	public void setCsrftoken(String csrftoken) {
-		this.csrftoken = csrftoken;
-	}
-	
-	public String getLoginType() {
-		return loginType;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setMockFlag</span>(<span class="pl-smi">Boolean</span> <span class="pl-v">mockFlag</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>mockFlag <span class="pl-k">=</span> mockFlag;
+    }
 
-	public void setLoginType(String loginType) {
-		this.loginType = loginType;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getCsrftoken</span>() {
+        <span class="pl-k">return</span> csrftoken;
+    }
 
-	public UsernamePasswordCaptchaToken() {
-		super();
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setCsrftoken</span>(<span class="pl-smi">String</span> <span class="pl-v">csrftoken</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>csrftoken <span class="pl-k">=</span> csrftoken;
+    }
 
-	public UsernamePasswordCaptchaToken(String username, char[] password, boolean rememberMe, String host,
-			String customerNo, String captcha, String timeZone, String language, String csrftoken, Boolean mockFlag,String loginType) {
-		super.setUsername(username.toLowerCase());
-		super.setPassword(password);
-		super.setRememberMe(rememberMe);
-		super.setHost(host);
-		this.customerNo = customerNo;
-		this.captcha = captcha;
-		this.timeZone = timeZone;
-		this.language = language;
-		this.mockFlag = mockFlag;
-		this.csrftoken = csrftoken;
-		this.loginType = loginType;
-	}
-}
-```
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getLoginType</span>() {
+        <span class="pl-k">return</span> loginType;
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setLoginType</span>(<span class="pl-smi">String</span> <span class="pl-v">loginType</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>loginType <span class="pl-k">=</span> loginType;
+    }
+
+    <span class="pl-k">public</span> <span class="pl-en">UsernamePasswordCaptchaToken</span>() {
+        <span class="pl-v">super</span>();
+    }
+
+    <span class="pl-k">public</span> <span class="pl-en">UsernamePasswordCaptchaToken</span>(<span class="pl-smi">String</span> <span class="pl-v">username</span>, <span class="pl-k">char</span>[] <span class="pl-v">password</span>, <span class="pl-k">boolean</span> <span class="pl-v">rememberMe</span>, <span class="pl-smi">String</span> <span class="pl-v">host</span>,
+            <span class="pl-smi">String</span> <span class="pl-v">customerNo</span>, <span class="pl-smi">String</span> <span class="pl-v">captcha</span>, <span class="pl-smi">String</span> <span class="pl-v">timeZone</span>, <span class="pl-smi">String</span> <span class="pl-v">language</span>, <span class="pl-smi">String</span> <span class="pl-v">csrftoken</span>, <span class="pl-smi">Boolean</span> <span class="pl-v">mockFlag</span>,<span class="pl-smi">String</span> <span class="pl-v">loginType</span>) {
+        <span class="pl-v">super</span><span class="pl-k">.</span>setUsername(username<span class="pl-k">.</span>toLowerCase());
+        <span class="pl-v">super</span><span class="pl-k">.</span>setPassword(password);
+        <span class="pl-v">super</span><span class="pl-k">.</span>setRememberMe(rememberMe);
+        <span class="pl-v">super</span><span class="pl-k">.</span>setHost(host);
+        <span class="pl-v">this</span><span class="pl-k">.</span>customerNo <span class="pl-k">=</span> customerNo;
+        <span class="pl-v">this</span><span class="pl-k">.</span>captcha <span class="pl-k">=</span> captcha;
+        <span class="pl-v">this</span><span class="pl-k">.</span>timeZone <span class="pl-k">=</span> timeZone;
+        <span class="pl-v">this</span><span class="pl-k">.</span>language <span class="pl-k">=</span> language;
+        <span class="pl-v">this</span><span class="pl-k">.</span>mockFlag <span class="pl-k">=</span> mockFlag;
+        <span class="pl-v">this</span><span class="pl-k">.</span>csrftoken <span class="pl-k">=</span> csrftoken;
+        <span class="pl-v">this</span><span class="pl-k">.</span>loginType <span class="pl-k">=</span> loginType;
+    }
+}</pre></div>
+
 
 ShiroDbRealm.java中登录认证的方法。
 
-```java
-protected AuthenticationInfo doGetAuthenticationInfo(
-			AuthenticationToken authcToken) throws AuthenticationException {
 
-		UsernamePasswordCaptchaToken token = (UsernamePasswordCaptchaToken) authcToken;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">protected</span> <span class="pl-smi">AuthenticationInfo</span> doGetAuthenticationInfo(
+            <span class="pl-smi">AuthenticationToken</span> authcToken) throws <span class="pl-smi">AuthenticationException</span> {
 
-		Boolean mockFlag = token.getMockFlag();
+        <span class="pl-smi">UsernamePasswordCaptchaToken</span> token <span class="pl-k">=</span> (<span class="pl-smi">UsernamePasswordCaptchaToken</span>) authcToken;
 
-		String timeZone = token.getTimeZone();
+        <span class="pl-smi">Boolean</span> mockFlag <span class="pl-k">=</span> token<span class="pl-k">.</span>getMockFlag();
 
-		String language = token.getLanguage();
+        <span class="pl-smi">String</span> timeZone <span class="pl-k">=</span> token<span class="pl-k">.</span>getTimeZone();
 
-		String captcha = token.getCaptcha();
-		// token
-		String csrftoken = token.getCsrftoken();
+        <span class="pl-smi">String</span> language <span class="pl-k">=</span> token<span class="pl-k">.</span>getLanguage();
 
-		String loginType = token.getLoginType();
-		if (mockFlag) {
-			User mockUser = userService.login(token.getCustomerNo(), "admin");
-			return new SimpleAuthenticationInfo(new ShiroUser(mockUser,
-					timeZone, language, mockFlag), token.getPassword(),
-					getName());
-		}
+        <span class="pl-smi">String</span> captcha <span class="pl-k">=</span> token<span class="pl-k">.</span>getCaptcha();
+        <span class="pl-c">// token</span>
+        <span class="pl-smi">String</span> csrftoken <span class="pl-k">=</span> token<span class="pl-k">.</span>getCsrftoken();
 
-		if (loginType == null || loginType.equals("")) {
-			Session session = SecurityUtils.getSubject().getSession();
-			String tokenValue = (String) session.getAttribute("csrftoken");
-			if (null == tokenValue || !tokenValue.equals(csrftoken)) {
-				throw new TokenException("failure");
-			}
-			SecurityUtils.getSubject().getSession()
-					.removeAttribute("csrftoken");
+        <span class="pl-smi">String</span> loginType <span class="pl-k">=</span> token<span class="pl-k">.</span>getLoginType();
+        <span class="pl-k">if</span> (mockFlag) {
+            <span class="pl-smi">User</span> mockUser <span class="pl-k">=</span> userService<span class="pl-k">.</span>login(token<span class="pl-k">.</span>getCustomerNo(), <span class="pl-s"><span class="pl-pds">"</span>admin<span class="pl-pds">"</span></span>);
+            <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-smi">SimpleAuthenticationInfo</span>(<span class="pl-k">new</span> <span class="pl-smi">ShiroUser</span>(mockUser,
+                    timeZone, language, mockFlag), token<span class="pl-k">.</span>getPassword(),
+                    getName());
+        }
 
-			String exitCode = (String) SecurityUtils.getSubject().getSession()
-					.getAttribute(CaptchaServlet.KEY_CAPTCHA);
-			if (null == captcha || !captcha.equalsIgnoreCase(exitCode)) {
-				throw new CaptchaException("wrong captcha");
-			}
-		}
+        <span class="pl-k">if</span> (loginType <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> loginType<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>)) {
+            <span class="pl-smi">Session</span> session <span class="pl-k">=</span> <span class="pl-smi">SecurityUtils</span><span class="pl-k">.</span>getSubject()<span class="pl-k">.</span>getSession();
+            <span class="pl-smi">String</span> tokenValue <span class="pl-k">=</span> (<span class="pl-smi">String</span>) session<span class="pl-k">.</span>getAttribute(<span class="pl-s"><span class="pl-pds">"</span>csrftoken<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (<span class="pl-c1">null</span> <span class="pl-k">==</span> tokenValue <span class="pl-k">||</span> <span class="pl-k">!</span>tokenValue<span class="pl-k">.</span>equals(csrftoken)) {
+                <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">TokenException</span>(<span class="pl-s"><span class="pl-pds">"</span>failure<span class="pl-pds">"</span></span>);
+            }
+            <span class="pl-smi">SecurityUtils</span><span class="pl-k">.</span>getSubject()<span class="pl-k">.</span>getSession()
+                    .removeAttribute(<span class="pl-s"><span class="pl-pds">"</span>csrftoken<span class="pl-pds">"</span></span>);
 
-		String username = token.getUsername();
-		if (username == null) {
-			throw new AccountException(
-					"Null usernames are not allowed by this realm.");
-		}
+            <span class="pl-smi">String</span> exitCode <span class="pl-k">=</span> (<span class="pl-smi">String</span>) <span class="pl-smi">SecurityUtils</span><span class="pl-k">.</span>getSubject()<span class="pl-k">.</span>getSession()
+                    .getAttribute(<span class="pl-smi">CaptchaServlet</span><span class="pl-c1"><span class="pl-k">.</span>KEY_CAPTCHA</span>);
+            <span class="pl-k">if</span> (<span class="pl-c1">null</span> <span class="pl-k">==</span> captcha <span class="pl-k">||</span> <span class="pl-k">!</span>captcha<span class="pl-k">.</span>equalsIgnoreCase(exitCode)) {
+                <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">CaptchaException</span>(<span class="pl-s"><span class="pl-pds">"</span>wrong captcha<span class="pl-pds">"</span></span>);
+            }
+        }
 
-		String customerNo = token.getCustomerNo();
-		if (customerNo == null) {
-			throw new AccountException(
-					"Null customerNo are not allowed by this realm.");
-		}
+        <span class="pl-smi">String</span> username <span class="pl-k">=</span> token<span class="pl-k">.</span>getUsername();
+        <span class="pl-k">if</span> (username <span class="pl-k">==</span> <span class="pl-c1">null</span>) {
+            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">AccountException</span>(
+                    <span class="pl-s"><span class="pl-pds">"</span>Null usernames are not allowed by this realm.<span class="pl-pds">"</span></span>);
+        }
 
-		User user = userService.login(customerNo, username);
+        <span class="pl-smi">String</span> customerNo <span class="pl-k">=</span> token<span class="pl-k">.</span>getCustomerNo();
+        <span class="pl-k">if</span> (customerNo <span class="pl-k">==</span> <span class="pl-c1">null</span>) {
+            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">AccountException</span>(
+                    <span class="pl-s"><span class="pl-pds">"</span>Null customerNo are not allowed by this realm.<span class="pl-pds">"</span></span>);
+        }
 
-		if (null == user) {
-			throw new UnknownAccountException("No account found for user ["
-					+ username + "]");
-		}
+        <span class="pl-smi">User</span> user <span class="pl-k">=</span> userService<span class="pl-k">.</span>login(customerNo, username);
 
-		ShiroUser shiroUser = new ShiroUser(user, timeZone, language,
-				Boolean.FALSE);
+        <span class="pl-k">if</span> (<span class="pl-c1">null</span> <span class="pl-k">==</span> user) {
+            <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">UnknownAccountException</span>(<span class="pl-s"><span class="pl-pds">"</span>No account found for user [<span class="pl-pds">"</span></span>
+                    <span class="pl-k">+</span> username <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>]<span class="pl-pds">"</span></span>);
+        }
 
-		return new SimpleAuthenticationInfo(shiroUser, user.getPwd(), getName());
+        <span class="pl-smi">ShiroUser</span> shiroUser <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">ShiroUser</span>(user, timeZone, language,
+                <span class="pl-smi">Boolean</span><span class="pl-c1"><span class="pl-k">.</span>FALSE</span>);
 
-	}
-```
+        <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-smi">SimpleAuthenticationInfo</span>(shiroUser, user<span class="pl-k">.</span>getPwd(), getName());
+
+    }</pre></div>
+
 
 然后，将loginsso.do方法中，获取页面中上的数据，构造一个token，再调用subject的login方法，就能实现登录了。
 
-```java
-@RequestMapping(value = "/loginsso.do", method = RequestMethod.GET)
-	public String loginSSO(HttpServletRequest req) {
-		Subject currentUser = SecurityUtils.getSubject();
-		UsernamePasswordCaptchaToken token = new UsernamePasswordCaptchaToken();
-		if (req.getParameter("username") != null)
-			token.setUsername(req.getParameter("username").toString());
-		if (req.getParameter("customerNo") != null)
-			token.setCustomerNo(req.getParameter("customerNo").toString());
-		if (req.getParameter("password") != null)
-			token.setPassword(CipherUtil.generatePassword(
-					req.getParameter("password").toString()).toCharArray());				
-		token.setLoginType("sso");
-		token.setMockFlag(false);
-		if (req.getParameter("captcha") != null)
-			token.setCaptcha(req.getParameter("captcha").toString());
-		if (req.getParameter("csrftoken") != null)
-			token.setCsrftoken(req.getParameter("csrftoken").toString());
-		if (req.getParameter("language") != null)
-			token.setLanguage(req.getParameter("language").toString());
-		token.setTimeZone(null);
-		if (req.getParameter("host") != null)
-			token.setHost(req.getParameter("host").toString());
-		token.setRememberMe(false);
-		currentUser.login(token);
-		if (currentUser.isAuthenticated()) {
-			return "redirect:/index.do";
-		}
-		return "login";
-	}
-```
+
+<div class="highlight highlight-source-java"><pre>@RequestMapping(value <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>/loginsso.do<span class="pl-pds">"</span></span>, method <span class="pl-k">=</span> <span class="pl-smi">RequestMethod</span><span class="pl-c1"><span class="pl-k">.</span>GET</span>)
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> loginSSO(<span class="pl-smi">HttpServletRequest</span> req) {
+        <span class="pl-smi">Subject</span> currentUser <span class="pl-k">=</span> <span class="pl-smi">SecurityUtils</span><span class="pl-k">.</span>getSubject();
+        <span class="pl-smi">UsernamePasswordCaptchaToken</span> token <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">UsernamePasswordCaptchaToken</span>();
+        <span class="pl-k">if</span> (req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>username<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">null</span>)
+            token<span class="pl-k">.</span>setUsername(req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>username<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>toString());
+        <span class="pl-k">if</span> (req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>customerNo<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">null</span>)
+            token<span class="pl-k">.</span>setCustomerNo(req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>customerNo<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>toString());
+        <span class="pl-k">if</span> (req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">null</span>)
+            token<span class="pl-k">.</span>setPassword(<span class="pl-smi">CipherUtil</span><span class="pl-k">.</span>generatePassword(
+                    req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>toString())<span class="pl-k">.</span>toCharArray());                
+        token<span class="pl-k">.</span>setLoginType(<span class="pl-s"><span class="pl-pds">"</span>sso<span class="pl-pds">"</span></span>);
+        token<span class="pl-k">.</span>setMockFlag(<span class="pl-c1">false</span>);
+        <span class="pl-k">if</span> (req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>captcha<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">null</span>)
+            token<span class="pl-k">.</span>setCaptcha(req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>captcha<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>toString());
+        <span class="pl-k">if</span> (req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>csrftoken<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">null</span>)
+            token<span class="pl-k">.</span>setCsrftoken(req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>csrftoken<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>toString());
+        <span class="pl-k">if</span> (req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>language<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">null</span>)
+            token<span class="pl-k">.</span>setLanguage(req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>language<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>toString());
+        token<span class="pl-k">.</span>setTimeZone(<span class="pl-c1">null</span>);
+        <span class="pl-k">if</span> (req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>host<span class="pl-pds">"</span></span>) <span class="pl-k">!=</span> <span class="pl-c1">null</span>)
+            token<span class="pl-k">.</span>setHost(req<span class="pl-k">.</span>getParameter(<span class="pl-s"><span class="pl-pds">"</span>host<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>toString());
+        token<span class="pl-k">.</span>setRememberMe(<span class="pl-c1">false</span>);
+        currentUser<span class="pl-k">.</span>login(token);
+        <span class="pl-k">if</span> (currentUser<span class="pl-k">.</span>isAuthenticated()) {
+            <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>redirect:/index.do<span class="pl-pds">"</span></span>;
+        }
+        <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>login<span class="pl-pds">"</span></span>;
+    }</pre></div>
+    
 
 最后，利用ajax跨域调用，实现远程登录。
 
-```javascript
-    var url = 'http://xxxx:8080/xxx/loginsso.do';
-	var param = {
-			customerNo : 'xxx',
-			username : 'xxx',
-			password : 'xxx'
-		};
-		$.when($.ajax(url, {
-			async : false,
-			data : param,
-			dataType : 'jsonp',
-			crossDomain : true
-		}).done(function(data) {
-			window.open("http://xxxx:8080/xxx/index.do");
-		}).fail(function(reason) {
-			window.open("http://xxxx:8080/xxx/index.do");
-		}));
-```
+
+<div class="highlight highlight-source-js"><pre>    <span class="pl-k">var</span> url <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://xxxx:8080/xxx/loginsso.do<span class="pl-pds">'</span></span>;
+    <span class="pl-k">var</span> param <span class="pl-k">=</span> {
+            customerNo <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+            username <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>,
+            password <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>xxx<span class="pl-pds">'</span></span>
+        };
+        $.when($.ajax(url, {
+            async <span class="pl-k">:</span> <span class="pl-c1">false</span>,
+            data <span class="pl-k">:</span> param,
+            dataType <span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>jsonp<span class="pl-pds">'</span></span>,
+            crossDomain <span class="pl-k">:</span> <span class="pl-c1">true</span>
+        }).done(<span class="pl-k">function</span>(<span class="pl-smi">data</span>) {
+            <span class="pl-c1">window</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>http://xxxx:8080/xxx/index.do<span class="pl-pds">"</span></span>);
+        }).fail(<span class="pl-k">function</span>(<span class="pl-smi">reason</span>) {
+            <span class="pl-c1">window</span>.<span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">"</span>http://xxxx:8080/xxx/index.do<span class="pl-pds">"</span></span>);
+        }));</pre></div>
 
 
 至于之后的用户名用AES加密传递，密码用MD5加密传递，就等接口调用方给到具体的加密方式了。就到这里了，应该不用再写登录接口了 -_-!
