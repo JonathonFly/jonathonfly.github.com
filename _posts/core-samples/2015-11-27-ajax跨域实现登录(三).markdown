@@ -16,17 +16,17 @@ tags : []
 
 **Firefox下的抓包结果如下面2幅图所示：**
 
-![1.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/1.png "")
+![1.png](/_posts/core-samples/pictures/2015-11-27/1.png "")
 
-![2.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/2.png "")
+![2.png](/_posts/core-samples/pictures/2015-11-27/2.png "")
 
 **IE下的抓包结果如下面3幅图所示：**
 
-![3.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/3.png "")
+![3.png](/_posts/core-samples/pictures/2015-11-27/3.png "")
 
-![4.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/4.png "")
+![4.png](/_posts/core-samples/pictures/2015-11-27/4.png "")
 
-![5.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/5.png "")
+![5.png](/_posts/core-samples/pictures/2015-11-27/5.png "")
 
 最终，我还是放弃了用jsonp跨域访问的方式，而是采用最原始的超链接访问的方式实现跳转。因为超链接方式是先跳转到目标网站，再进行登录操作，而此时，即便是IE浏览器也已经创建了jsessionid。
 
