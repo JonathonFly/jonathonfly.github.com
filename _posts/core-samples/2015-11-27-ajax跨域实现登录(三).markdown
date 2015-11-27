@@ -16,17 +16,27 @@ tags : []
 
 **Firefox下的抓包结果如下面2幅图所示：**
 
-![1.png](/_posts/core-samples/pictures/2015-11-27/1.png "")
+<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/1.png">
+<img style="max-width:100%;" alt="1.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/1.png">
+</a>
 
-![2.png](/_posts/core-samples/pictures/2015-11-27/2.png "")
+<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/2.png">
+<img style="max-width:100%;" alt="2.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/2.png">
+</a>
 
 **IE下的抓包结果如下面3幅图所示：**
 
-![3.png](/_posts/core-samples/pictures/2015-11-27/3.png "")
+<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/3.png">
+<img style="max-width:100%;" alt="3.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/3.png">
+</a>
 
-![4.png](/_posts/core-samples/pictures/2015-11-27/4.png "")
+<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/4.png">
+<img style="max-width:100%;" alt="4.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/4.png">
+</a>
 
-![5.png](/_posts/core-samples/pictures/2015-11-27/5.png "")
+<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/5.png">
+<img style="max-width:100%;" alt="5.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/5.png">
+</a>
 
 最终，我还是放弃了用jsonp跨域访问的方式，而是采用最原始的超链接访问的方式实现跳转。因为超链接方式是先跳转到目标网站，再进行登录操作，而此时，即便是IE浏览器也已经创建了jsessionid。
 
@@ -36,57 +46,275 @@ AES加密策略为“AES/CBC/PKCS5PADDING”，使用一个约定的key和初始
 
 AES加密工具类主要代码如下：
 
-```java
-public class AESCode {
-	public static String encrypt(String key, String initVector, String value) {
-        try {
-            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
-            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
-
-            byte[] encrypted = cipher.doFinal(value.getBytes());
-
-            return Base64.encodeBase64String(encrypted);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public static String decrypt(String key, String initVector, String encrypted) {
-        try {
-            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
-            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-
-            byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-
-            return new String(original);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public static void main(String[] args) {
-        String key = "abcdefghijklmno3"; // 128 bit key
-        String initVector = "ppqdfseerffdmhu4"; // 16 bytes IV
-
-        String value="aaa";
-        System.out.println("加密前："+value);
-        value=encrypt(key, initVector, value);
-        System.out.println("加密后："+value);
-        value=decrypt(key, initVector,value);
-        System.out.println("解密后："+value);
-    }
-}
-```
+<div class="highlight highlight-source-java">
+<pre>
+<span class="pl-k">public</span>
+<span class="pl-k">class</span>
+<span class="pl-en">AESCode</span>
+{
+<span class="pl-k">public</span>
+<span class="pl-k">static</span>
+<span class="pl-smi">String</span>
+<span class="pl-en">encrypt</span>
+(
+<span class="pl-smi">String</span>
+<span class="pl-v">key</span>
+,
+<span class="pl-smi">String</span>
+<span class="pl-v">initVector</span>
+,
+<span class="pl-smi">String</span>
+<span class="pl-v">value</span>
+) {
+<span class="pl-k">try</span>
+{
+<span class="pl-smi">IvParameterSpec</span>
+iv
+<span class="pl-k">=</span>
+<span class="pl-k">new</span>
+<span class="pl-smi">IvParameterSpec</span>
+(initVector
+<span class="pl-k">.</span>
+getBytes(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+UTF-8
+<span class="pl-pds">"</span>
+</span>
+));
+<span class="pl-smi">SecretKeySpec</span>
+skeySpec
+<span class="pl-k">=</span>
+<span class="pl-k">new</span>
+<span class="pl-smi">SecretKeySpec</span>
+(key
+<span class="pl-k">.</span>
+getBytes(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+UTF-8
+<span class="pl-pds">"</span>
+</span>
+),
+<span class="pl-s">
+<span class="pl-pds">"</span>
+AES
+<span class="pl-pds">"</span>
+</span>
+);
+<span class="pl-smi">Cipher</span>
+cipher
+<span class="pl-k">=</span>
+<span class="pl-smi">Cipher</span>
+<span class="pl-k">.</span>
+getInstance(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+AES/CBC/PKCS5PADDING
+<span class="pl-pds">"</span>
+</span>
+); cipher
+<span class="pl-k">.</span>
+init(
+<span class="pl-smi">Cipher</span>
+<span class="pl-c1">
+<span class="pl-k">.</span>
+ENCRYPT_MODE
+</span>
+, skeySpec, iv);
+<span class="pl-k">byte</span>
+[] encrypted
+<span class="pl-k">=</span>
+cipher
+<span class="pl-k">.</span>
+doFinal(value
+<span class="pl-k">.</span>
+getBytes());
+<span class="pl-k">return</span>
+<span class="pl-smi">Base64</span>
+<span class="pl-k">.</span>
+encodeBase64String(encrypted); }
+<span class="pl-k">catch</span>
+(
+<span class="pl-smi">Exception</span>
+ex) { ex
+<span class="pl-k">.</span>
+printStackTrace(); }
+<span class="pl-k">return</span>
+<span class="pl-c1">null</span>
+; }
+<span class="pl-k">public</span>
+<span class="pl-k">static</span>
+<span class="pl-smi">String</span>
+<span class="pl-en">decrypt</span>
+(
+<span class="pl-smi">String</span>
+<span class="pl-v">key</span>
+,
+<span class="pl-smi">String</span>
+<span class="pl-v">initVector</span>
+,
+<span class="pl-smi">String</span>
+<span class="pl-v">encrypted</span>
+) {
+<span class="pl-k">try</span>
+{
+<span class="pl-smi">IvParameterSpec</span>
+iv
+<span class="pl-k">=</span>
+<span class="pl-k">new</span>
+<span class="pl-smi">IvParameterSpec</span>
+(initVector
+<span class="pl-k">.</span>
+getBytes(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+UTF-8
+<span class="pl-pds">"</span>
+</span>
+));
+<span class="pl-smi">SecretKeySpec</span>
+skeySpec
+<span class="pl-k">=</span>
+<span class="pl-k">new</span>
+<span class="pl-smi">SecretKeySpec</span>
+(key
+<span class="pl-k">.</span>
+getBytes(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+UTF-8
+<span class="pl-pds">"</span>
+</span>
+),
+<span class="pl-s">
+<span class="pl-pds">"</span>
+AES
+<span class="pl-pds">"</span>
+</span>
+);
+<span class="pl-smi">Cipher</span>
+cipher
+<span class="pl-k">=</span>
+<span class="pl-smi">Cipher</span>
+<span class="pl-k">.</span>
+getInstance(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+AES/CBC/PKCS5PADDING
+<span class="pl-pds">"</span>
+</span>
+); cipher
+<span class="pl-k">.</span>
+init(
+<span class="pl-smi">Cipher</span>
+<span class="pl-c1">
+<span class="pl-k">.</span>
+DECRYPT_MODE
+</span>
+, skeySpec, iv);
+<span class="pl-k">byte</span>
+[] original
+<span class="pl-k">=</span>
+cipher
+<span class="pl-k">.</span>
+doFinal(
+<span class="pl-smi">Base64</span>
+<span class="pl-k">.</span>
+decodeBase64(encrypted));
+<span class="pl-k">return</span>
+<span class="pl-k">new</span>
+<span class="pl-smi">String</span>
+(original); }
+<span class="pl-k">catch</span>
+(
+<span class="pl-smi">Exception</span>
+ex) { ex
+<span class="pl-k">.</span>
+printStackTrace(); }
+<span class="pl-k">return</span>
+<span class="pl-c1">null</span>
+; }
+<span class="pl-k">public</span>
+<span class="pl-k">static</span>
+<span class="pl-k">void</span>
+<span class="pl-en">main</span>
+(
+<span class="pl-k">String</span>
+[]
+<span class="pl-v">args</span>
+) {
+<span class="pl-smi">String</span>
+key
+<span class="pl-k">=</span>
+<span class="pl-s">
+<span class="pl-pds">"</span>
+abcdefghijklmno3
+<span class="pl-pds">"</span>
+</span>
+;
+<span class="pl-c">// 128 bit key</span>
+<span class="pl-smi">String</span>
+initVector
+<span class="pl-k">=</span>
+<span class="pl-s">
+<span class="pl-pds">"</span>
+ppqdfseerffdmhu4
+<span class="pl-pds">"</span>
+</span>
+;
+<span class="pl-c">// 16 bytes IV</span>
+<span class="pl-smi">String</span>
+value
+<span class="pl-k">=</span>
+<span class="pl-s">
+<span class="pl-pds">"</span>
+aaa
+<span class="pl-pds">"</span>
+</span>
+;
+<span class="pl-smi">System</span>
+<span class="pl-k">.</span>
+out
+<span class="pl-k">.</span>
+println(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+加密前：
+<span class="pl-pds">"</span>
+</span>
+<span class="pl-k">+</span>
+value); value
+<span class="pl-k">=</span>
+encrypt(key, initVector, value);
+<span class="pl-smi">System</span>
+<span class="pl-k">.</span>
+out
+<span class="pl-k">.</span>
+println(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+加密后：
+<span class="pl-pds">"</span>
+</span>
+<span class="pl-k">+</span>
+value); value
+<span class="pl-k">=</span>
+decrypt(key, initVector,value);
+<span class="pl-smi">System</span>
+<span class="pl-k">.</span>
+out
+<span class="pl-k">.</span>
+println(
+<span class="pl-s">
+<span class="pl-pds">"</span>
+解密后：
+<span class="pl-pds">"</span>
+</span>
+<span class="pl-k">+</span>
+value); } }
+</pre>
+</div>
 
 上述加密、解密工具类需要commons-codec-1.x.jar包的支持，其中版本建议1.5或以上，低版本可能没有类中的一些方法。
 
