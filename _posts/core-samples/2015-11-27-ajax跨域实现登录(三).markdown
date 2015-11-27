@@ -16,27 +16,22 @@ tags : []
 
 **Firefox下的抓包结果如下面2幅图所示：**
 
-<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/1.png">
-<img style="max-width:100%;" alt="1.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/1.png">
-</a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/1.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/1.png" style="max-width:100%;"></a>
 
-<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/2.png">
-<img style="max-width:100%;" alt="2.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/2.png">
-</a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/2.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/2.png" style="max-width:100%;"></a>
 
 **IE下的抓包结果如下面3幅图所示：**
 
-<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/3.png">
-<img style="max-width:100%;" alt="3.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/3.png">
-</a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/3.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/3.png" style="max-width:100%;"></a>
 
-<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/4.png">
-<img style="max-width:100%;" alt="4.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/4.png">
-</a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/4.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/4.png" style="max-width:100%;"></a>
 
-<a target="_blank" href="/JonathonFly/jonathonfly.github.com/blob/master/_posts/core-samples/pictures/2015-11-27/5.png">
-<img style="max-width:100%;" alt="5.png" src="/JonathonFly/jonathonfly.github.com/raw/master/_posts/core-samples/pictures/2015-11-27/5.png">
-</a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/5.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2015-11-27/5.png" style="max-width:100%;"></a>
 
 最终，我还是放弃了用jsonp跨域访问的方式，而是采用最原始的超链接访问的方式实现跳转。因为超链接方式是先跳转到目标网站，再进行登录操作，而此时，即便是IE浏览器也已经创建了jsessionid。
 
