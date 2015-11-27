@@ -1,0 +1,97 @@
+---
+layout: post
+category : Java
+tagline: 
+tags : []
+---
+{% include JB/setup %}
+
+经过测试，发现ajax跨域登录在IE8下存在问题。
+
+问题描述为：当第一次打开IE浏览器时，第一次登录后的跳转错误，总是跳转到登录页面，后面的登录跳转便不再有任何问题。于是，我用抓包工具Fiddler对在不同浏览器下的情况分别做分析，终于发现了问题的缘由。
+
+在Firefox和Chrome浏览器下，在给目标网站发送ajax请求的时候，浏览器就为请求创建了名为jsessionid的cookie。在登录以后，发送跳转网站首页的请求就会带上这个名为jsessionid的cookie，用于网站判断登录校验。
+
+而在IE8浏览器下，第一次发送ajax请求时，浏览器并不会创建这个cookie。而是在第一次真正跳转到该网站时，才会第一次创建这个名为jsessionid的cookie。
+
+**Firefox下的抓包结果如下面2幅图所示：**
+
+![1.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/1.png "")
+
+![2.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/2.png "")
+
+**IE下的抓包结果如下面3幅图所示：**
+
+![3.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/3.png "")
+
+![4.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/4.png "")
+
+![5.png](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2015-11-27/5.png "")
+
+最终，我还是放弃了用jsonp跨域访问的方式，而是采用最原始的超链接访问的方式实现跳转。因为超链接方式是先跳转到目标网站，再进行登录操作，而此时，即便是IE浏览器也已经创建了jsessionid。
+
+为了保证一定的安全性，我为目标网站新写了一个登录方法：loginsso，方法中对传递过来的参数进行AES解密后，再执行登录操作。
+
+AES加密策略为“AES/CBC/PKCS5PADDING”，使用一个约定的key和初始化向量即可。
+
+AES加密工具类主要代码如下：
+
+```java
+public class AESCode {
+	public static String encrypt(String key, String initVector, String value) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+
+            return Base64.encodeBase64String(encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static String decrypt(String key, String initVector, String encrypted) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+
+            byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
+
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void main(String[] args) {
+        String key = "abcdefghijklmno3"; // 128 bit key
+        String initVector = "ppqdfseerffdmhu4"; // 16 bytes IV
+
+        String value="aaa";
+        System.out.println("加密前："+value);
+        value=encrypt(key, initVector, value);
+        System.out.println("加密后："+value);
+        value=decrypt(key, initVector,value);
+        System.out.println("解密后："+value);
+    }
+}
+```
+
+上述加密、解密工具类需要commons-codec-1.x.jar包的支持，其中版本建议1.5或以上，低版本可能没有类中的一些方法。
+
+在进行登录跳转时，通过一个action，获取登录参数的值。参数值一般是存在session中的，在后台获取session中的参数，并经过AES加密后传到前台。通过一个超链接，执行window.open()方法，打开登录url就行。
+
+另外，登录url的加密参数值，需要用 encodeURIComponent()转义，因为加密参数值中一般含有特殊字符。
+
+PS：辛辛苦苦干半年，最后还是回到解放前用的方法，忧伤~
