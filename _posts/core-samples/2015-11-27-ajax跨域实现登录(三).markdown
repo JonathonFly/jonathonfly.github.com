@@ -46,275 +46,55 @@ AES加密策略为“AES/CBC/PKCS5PADDING”，使用一个约定的key和初始
 
 AES加密工具类主要代码如下：
 
-<div class="highlight highlight-source-java">
-<pre>
-<span class="pl-k">public</span>
-<span class="pl-k">class</span>
-<span class="pl-en">AESCode</span>
-{
-<span class="pl-k">public</span>
-<span class="pl-k">static</span>
-<span class="pl-smi">String</span>
-<span class="pl-en">encrypt</span>
-(
-<span class="pl-smi">String</span>
-<span class="pl-v">key</span>
-,
-<span class="pl-smi">String</span>
-<span class="pl-v">initVector</span>
-,
-<span class="pl-smi">String</span>
-<span class="pl-v">value</span>
-) {
-<span class="pl-k">try</span>
-{
-<span class="pl-smi">IvParameterSpec</span>
-iv
-<span class="pl-k">=</span>
-<span class="pl-k">new</span>
-<span class="pl-smi">IvParameterSpec</span>
-(initVector
-<span class="pl-k">.</span>
-getBytes(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-UTF-8
-<span class="pl-pds">"</span>
-</span>
-));
-<span class="pl-smi">SecretKeySpec</span>
-skeySpec
-<span class="pl-k">=</span>
-<span class="pl-k">new</span>
-<span class="pl-smi">SecretKeySpec</span>
-(key
-<span class="pl-k">.</span>
-getBytes(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-UTF-8
-<span class="pl-pds">"</span>
-</span>
-),
-<span class="pl-s">
-<span class="pl-pds">"</span>
-AES
-<span class="pl-pds">"</span>
-</span>
-);
-<span class="pl-smi">Cipher</span>
-cipher
-<span class="pl-k">=</span>
-<span class="pl-smi">Cipher</span>
-<span class="pl-k">.</span>
-getInstance(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-AES/CBC/PKCS5PADDING
-<span class="pl-pds">"</span>
-</span>
-); cipher
-<span class="pl-k">.</span>
-init(
-<span class="pl-smi">Cipher</span>
-<span class="pl-c1">
-<span class="pl-k">.</span>
-ENCRYPT_MODE
-</span>
-, skeySpec, iv);
-<span class="pl-k">byte</span>
-[] encrypted
-<span class="pl-k">=</span>
-cipher
-<span class="pl-k">.</span>
-doFinal(value
-<span class="pl-k">.</span>
-getBytes());
-<span class="pl-k">return</span>
-<span class="pl-smi">Base64</span>
-<span class="pl-k">.</span>
-encodeBase64String(encrypted); }
-<span class="pl-k">catch</span>
-(
-<span class="pl-smi">Exception</span>
-ex) { ex
-<span class="pl-k">.</span>
-printStackTrace(); }
-<span class="pl-k">return</span>
-<span class="pl-c1">null</span>
-; }
-<span class="pl-k">public</span>
-<span class="pl-k">static</span>
-<span class="pl-smi">String</span>
-<span class="pl-en">decrypt</span>
-(
-<span class="pl-smi">String</span>
-<span class="pl-v">key</span>
-,
-<span class="pl-smi">String</span>
-<span class="pl-v">initVector</span>
-,
-<span class="pl-smi">String</span>
-<span class="pl-v">encrypted</span>
-) {
-<span class="pl-k">try</span>
-{
-<span class="pl-smi">IvParameterSpec</span>
-iv
-<span class="pl-k">=</span>
-<span class="pl-k">new</span>
-<span class="pl-smi">IvParameterSpec</span>
-(initVector
-<span class="pl-k">.</span>
-getBytes(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-UTF-8
-<span class="pl-pds">"</span>
-</span>
-));
-<span class="pl-smi">SecretKeySpec</span>
-skeySpec
-<span class="pl-k">=</span>
-<span class="pl-k">new</span>
-<span class="pl-smi">SecretKeySpec</span>
-(key
-<span class="pl-k">.</span>
-getBytes(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-UTF-8
-<span class="pl-pds">"</span>
-</span>
-),
-<span class="pl-s">
-<span class="pl-pds">"</span>
-AES
-<span class="pl-pds">"</span>
-</span>
-);
-<span class="pl-smi">Cipher</span>
-cipher
-<span class="pl-k">=</span>
-<span class="pl-smi">Cipher</span>
-<span class="pl-k">.</span>
-getInstance(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-AES/CBC/PKCS5PADDING
-<span class="pl-pds">"</span>
-</span>
-); cipher
-<span class="pl-k">.</span>
-init(
-<span class="pl-smi">Cipher</span>
-<span class="pl-c1">
-<span class="pl-k">.</span>
-DECRYPT_MODE
-</span>
-, skeySpec, iv);
-<span class="pl-k">byte</span>
-[] original
-<span class="pl-k">=</span>
-cipher
-<span class="pl-k">.</span>
-doFinal(
-<span class="pl-smi">Base64</span>
-<span class="pl-k">.</span>
-decodeBase64(encrypted));
-<span class="pl-k">return</span>
-<span class="pl-k">new</span>
-<span class="pl-smi">String</span>
-(original); }
-<span class="pl-k">catch</span>
-(
-<span class="pl-smi">Exception</span>
-ex) { ex
-<span class="pl-k">.</span>
-printStackTrace(); }
-<span class="pl-k">return</span>
-<span class="pl-c1">null</span>
-; }
-<span class="pl-k">public</span>
-<span class="pl-k">static</span>
-<span class="pl-k">void</span>
-<span class="pl-en">main</span>
-(
-<span class="pl-k">String</span>
-[]
-<span class="pl-v">args</span>
-) {
-<span class="pl-smi">String</span>
-key
-<span class="pl-k">=</span>
-<span class="pl-s">
-<span class="pl-pds">"</span>
-abcdefghijklmno3
-<span class="pl-pds">"</span>
-</span>
-;
-<span class="pl-c">// 128 bit key</span>
-<span class="pl-smi">String</span>
-initVector
-<span class="pl-k">=</span>
-<span class="pl-s">
-<span class="pl-pds">"</span>
-ppqdfseerffdmhu4
-<span class="pl-pds">"</span>
-</span>
-;
-<span class="pl-c">// 16 bytes IV</span>
-<span class="pl-smi">String</span>
-value
-<span class="pl-k">=</span>
-<span class="pl-s">
-<span class="pl-pds">"</span>
-aaa
-<span class="pl-pds">"</span>
-</span>
-;
-<span class="pl-smi">System</span>
-<span class="pl-k">.</span>
-out
-<span class="pl-k">.</span>
-println(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-加密前：
-<span class="pl-pds">"</span>
-</span>
-<span class="pl-k">+</span>
-value); value
-<span class="pl-k">=</span>
-encrypt(key, initVector, value);
-<span class="pl-smi">System</span>
-<span class="pl-k">.</span>
-out
-<span class="pl-k">.</span>
-println(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-加密后：
-<span class="pl-pds">"</span>
-</span>
-<span class="pl-k">+</span>
-value); value
-<span class="pl-k">=</span>
-decrypt(key, initVector,value);
-<span class="pl-smi">System</span>
-<span class="pl-k">.</span>
-out
-<span class="pl-k">.</span>
-println(
-<span class="pl-s">
-<span class="pl-pds">"</span>
-解密后：
-<span class="pl-pds">"</span>
-</span>
-<span class="pl-k">+</span>
-value); } }
-</pre>
-</div>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">AESCode</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-smi">String</span> <span class="pl-en">encrypt</span>(<span class="pl-smi">String</span> <span class="pl-v">key</span>, <span class="pl-smi">String</span> <span class="pl-v">initVector</span>, <span class="pl-smi">String</span> <span class="pl-v">value</span>) {
+        <span class="pl-k">try</span> {
+            <span class="pl-smi">IvParameterSpec</span> iv <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">IvParameterSpec</span>(initVector<span class="pl-k">.</span>getBytes(<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>));
+            <span class="pl-smi">SecretKeySpec</span> skeySpec <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">SecretKeySpec</span>(key<span class="pl-k">.</span>getBytes(<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>), <span class="pl-s"><span class="pl-pds">"</span>AES<span class="pl-pds">"</span></span>);
+
+            <span class="pl-smi">Cipher</span> cipher <span class="pl-k">=</span> <span class="pl-smi">Cipher</span><span class="pl-k">.</span>getInstance(<span class="pl-s"><span class="pl-pds">"</span>AES/CBC/PKCS5PADDING<span class="pl-pds">"</span></span>);
+            cipher<span class="pl-k">.</span>init(<span class="pl-smi">Cipher</span><span class="pl-c1"><span class="pl-k">.</span>ENCRYPT_MODE</span>, skeySpec, iv);
+
+            <span class="pl-k">byte</span>[] encrypted <span class="pl-k">=</span> cipher<span class="pl-k">.</span>doFinal(value<span class="pl-k">.</span>getBytes());
+
+            <span class="pl-k">return</span> <span class="pl-smi">Base64</span><span class="pl-k">.</span>encodeBase64String(encrypted);
+        } <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> ex) {
+            ex<span class="pl-k">.</span>printStackTrace();
+        }
+
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-smi">String</span> <span class="pl-en">decrypt</span>(<span class="pl-smi">String</span> <span class="pl-v">key</span>, <span class="pl-smi">String</span> <span class="pl-v">initVector</span>, <span class="pl-smi">String</span> <span class="pl-v">encrypted</span>) {
+        <span class="pl-k">try</span> {
+            <span class="pl-smi">IvParameterSpec</span> iv <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">IvParameterSpec</span>(initVector<span class="pl-k">.</span>getBytes(<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>));
+            <span class="pl-smi">SecretKeySpec</span> skeySpec <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">SecretKeySpec</span>(key<span class="pl-k">.</span>getBytes(<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>), <span class="pl-s"><span class="pl-pds">"</span>AES<span class="pl-pds">"</span></span>);
+
+            <span class="pl-smi">Cipher</span> cipher <span class="pl-k">=</span> <span class="pl-smi">Cipher</span><span class="pl-k">.</span>getInstance(<span class="pl-s"><span class="pl-pds">"</span>AES/CBC/PKCS5PADDING<span class="pl-pds">"</span></span>);
+            cipher<span class="pl-k">.</span>init(<span class="pl-smi">Cipher</span><span class="pl-c1"><span class="pl-k">.</span>DECRYPT_MODE</span>, skeySpec, iv);
+
+            <span class="pl-k">byte</span>[] original <span class="pl-k">=</span> cipher<span class="pl-k">.</span>doFinal(<span class="pl-smi">Base64</span><span class="pl-k">.</span>decodeBase64(encrypted));
+
+            <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>(original);
+        } <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> ex) {
+            ex<span class="pl-k">.</span>printStackTrace();
+        }
+
+        <span class="pl-k">return</span> <span class="pl-c1">null</span>;
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) {
+        <span class="pl-smi">String</span> key <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>abcdefghijklmno3<span class="pl-pds">"</span></span>; <span class="pl-c">// 128 bit key</span>
+        <span class="pl-smi">String</span> initVector <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>ppqdfseerffdmhu4<span class="pl-pds">"</span></span>; <span class="pl-c">// 16 bytes IV</span>
+
+        <span class="pl-smi">String</span> value<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>aaa<span class="pl-pds">"</span></span>;
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>加密前：<span class="pl-pds">"</span></span><span class="pl-k">+</span>value);
+        value<span class="pl-k">=</span>encrypt(key, initVector, value);
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>加密后：<span class="pl-pds">"</span></span><span class="pl-k">+</span>value);
+        value<span class="pl-k">=</span>decrypt(key, initVector,value);
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>解密后：<span class="pl-pds">"</span></span><span class="pl-k">+</span>value);
+    }
+}</pre></div>
 
 上述加密、解密工具类需要commons-codec-1.x.jar包的支持，其中版本建议1.5或以上，低版本可能没有类中的一些方法。
 
