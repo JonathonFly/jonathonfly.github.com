@@ -9,69 +9,86 @@ tags : [hadoop, mapreduce, matrix multiply]
 由于项目需要，前段时间在研究Hadoop下的MapReduce，主要是将普通的算法转化为可在Hadoop集群下运行的MapReduce算法。
 
 MapReduce程序一般是将HDFS文件系统中的文件作为输入和输出，本例的输入形式如下：
-![ppt1.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt1.JPG "")
+
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt1.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt1.JPG" style="max-width:100%;"></a>
 
 输入文件A矩阵：matrix_A.txt，B矩阵文件matrix_B.txt，在HDFS中的形式如下：
 
-![1.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/1.PNG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/1.PNG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/1.PNG" style="max-width:100%;"></a>
 
-![2.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/2.PNG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/2.PNG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/2.PNG" style="max-width:100%;"></a>
 
 要实现如何计算mxn的矩阵与nxp的矩阵相乘，首先，我们先来看一下3x3的矩阵相乘，以便有一个直观的印象。
 
-![ppt2.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt2.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt2.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt2.JPG" style="max-width:100%;"></a>
 
 左侧矩阵的每一行的元素与右侧矩阵的每一列的对应元素相乘，然后将相乘结果相加，得到结果矩阵每个位置的计算结果。由于MapReduce中的数据只能遍历一次，第二次读的时候就会变为空，所以，首先我们要计算出矩阵中每一个元素需要复制多少份，才能满足A，B各个元素相乘的需求。我们可以看到，A矩阵第1行，第1列的元素A1,1分别与B1,1、B1,2、B1,3三个元素相乘。即A1,1需要复制3份，而该份数正好是B的列数。同理，B中的每个元素需要复制的份数为A的行数。
 
-![ppt3.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt3.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt3.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt3.JPG" style="max-width:100%;"></a>
 
 那么，知道一个元素需复制的份数后，下一个问题就是：这些元素以何种形式进行进行存储呢？
 如A1,1这个元素，需要分别与B1,1、B1,2、B1,3三个元素相乘，那么我们可以用如下形式表示：
 (1#1#1 A1,1)(1#2#1 A1,1)(1#3#1 A1,1)，其中一个括号代表一行数据，A1,1代表矩阵第一行第一列的值。1#2#1中第一个数字1代表结果矩阵第1行，即A1,1的行号；第二个数字2代表结果矩阵的第2列，即B1,2的列号；第3个数字1代表A1,1的列号和B1,2的行号。
 
-![ppt4.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt4.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt4.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt4.JPG" style="max-width:100%;"></a>
 
 这样的存储形式的优势是什么？同一个key，如1#2#1，只会有2个元素，即一个A1,1和一个B1,2。可以直接将这两个元素相乘。
 
-![ppt5.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt5.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt5.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt5.JPG" style="max-width:100%;"></a>
 
 同理，可以算出B的元素复制和元素表示。如B1,2可以表示为：(1#2#1 B1,2)(2#2#1 B1,2)(3#2#1 B1,2)
 
-![ppt6.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt6.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt6.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt6.JPG" style="max-width:100%;"></a>
 
 通用公式如下：
 
-![ppt7.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt7.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt7.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt7.JPG" style="max-width:100%;"></a>
 
 在reduce的时候，相同的key的值在同一个节点计算，可以直接相乘。如key为1#2#1，结果为A1,1 * B1,2，输出结果为:1#2 A1,1 * B1,2 
 
-![ppt8.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt8.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt8.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt8.JPG" style="max-width:100%;"></a>
 
 通用的在第一个reduce阶段进行乘法计算。
 
-![ppt9.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt9.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt9.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt9.JPG" style="max-width:100%;"></a>
 
 第二个阶段进行加法计算。
 
-![ppt10.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt10.JPG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt10.JPG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/ppt10.JPG" style="max-width:100%;"></a>
 
 一些HDFS计算步骤的结果：
 
 第一次reduce结果：
 
-![3.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/3.PNG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/3.PNG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/3.PNG" style="max-width:100%;"></a>
 
 第二次reduce结果：
 
-![4.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/4.PNG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/4.PNG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/4.PNG" style="max-width:100%;"></a>
 
 Sort结果：
 
-![5.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/5.PNG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/5.PNG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/5.PNG" style="max-width:100%;"></a>
 
 目录结构：
 
-![6.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/6.PNG "")
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/6.PNG" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/6.PNG" style="max-width:100%;"></a>
 
 总的代码如下：
 
