@@ -15,11 +15,11 @@ MapReduce程序一般是将HDFS文件系统中的文件作为输入和输出，�
 
 输入文件A矩阵：matrix_A.txt，B矩阵文件matrix_B.txt，在HDFS中的形式如下：
 
-<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/1.PNG" target="_blank">
-<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/1.PNG" style="max-width:100%;"></a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/1.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/1.png" style="max-width:100%;"></a>
 
-<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/2.PNG" target="_blank">
-<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/2.PNG" style="max-width:100%;"></a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/2.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/2.png" style="max-width:100%;"></a>
 
 要实现如何计算mxn的矩阵与nxp的矩阵相乘，首先，我们先来看一下3x3的矩阵相乘，以便有一个直观的印象。
 
@@ -72,23 +72,23 @@ MapReduce程序一般是将HDFS文件系统中的文件作为输入和输出，�
 
 第一次reduce结果：
 
-<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/3.PNG" target="_blank">
-<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/3.PNG" style="max-width:100%;"></a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/3.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/3.png" style="max-width:100%;"></a>
 
 第二次reduce结果：
 
-<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/4.PNG" target="_blank">
-<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/4.PNG" style="max-width:100%;"></a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/4.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/4.png" style="max-width:100%;"></a>
 
 Sort结果：
 
-<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/5.PNG" target="_blank">
-<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/5.PNG" style="max-width:100%;"></a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/5.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/5.png" style="max-width:100%;"></a>
 
 目录结构：
 
-<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/6.PNG" target="_blank">
-<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/6.PNG" style="max-width:100%;"></a>
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/6.png" target="_blank">
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-01-11/6.png" style="max-width:100%;"></a>
 
 总的代码如下：
 
