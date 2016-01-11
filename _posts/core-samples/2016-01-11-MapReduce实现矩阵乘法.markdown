@@ -43,7 +43,7 @@ MapReduce程序一般是将HDFS文件系统中的文件作为输入和输出，�
 
 ![ppt7.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt7.JPG "")
 
-在reduce的时候，相同的key的值在同一个节点计算，可以直接相乘。如key为1#2#1，结果为A1,1 X B1,2
+在reduce的时候，相同的key的值在同一个节点计算，可以直接相乘。如key为1#2#1，结果为A1,1 * B1,2，输出结果为:1#2 A1,1 * B1,2 
 
 ![ppt8.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt8.JPG "")
 
@@ -54,6 +54,24 @@ MapReduce程序一般是将HDFS文件系统中的文件作为输入和输出，�
 第二个阶段进行加法计算。
 
 ![ppt10.JPG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/ppt10.JPG "")
+
+一些HDFS计算步骤的结果：
+
+第一次reduce结果：
+
+![3.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/3.PNG "")
+
+第二次reduce结果：
+
+![4.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/4.PNG "")
+
+Sort结果：
+
+![5.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/5.PNG "")
+
+目录结构：
+
+![6.PNG](E:/MyRepository/jonathonfly.github.com/_posts/core-samples/pictures/2016-01-11/6.PNG "")
 
 总的代码如下：
 
