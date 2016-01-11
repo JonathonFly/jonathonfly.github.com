@@ -94,417 +94,411 @@ Sort结果：
 
 MatrixMultiply.java
 
-```java
-package com.ideal;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal</span>;
 
-import java.io.IOException;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.IOException</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.log4j.Logger;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Mapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Reducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileSplit</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.log4j.Logger</span>;
 
-public class MatrixMultiply {
-	private static Logger logger = Logger.getLogger(MatrixMultiply.class);
-	private static Integer ARowNum = 0;
-	private static Integer AColNum = 0;
-	private static Integer BRowNum = 0;
-	private static Integer BColNum = 0;
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MatrixMultiply</span> {
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">Logger</span> logger <span class="pl-k">=</span> <span class="pl-smi">Logger</span><span class="pl-k">.</span>getLogger(<span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span>class);
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">Integer</span> ARowNum <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">Integer</span> AColNum <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">Integer</span> BRowNum <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">Integer</span> BColNum <span class="pl-k">=</span> <span class="pl-c1">0</span>;
 
-	public static class MatrixMultiplyPreMapper extends Mapper<Object, Text, Text, Text> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MatrixMultiplyPreMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			Configuration conf = context.getConfiguration();
-			MatrixMultiply.ARowNum = conf.getInt("ARowNum", 0);
-			MatrixMultiply.AColNum = conf.getInt("AColNum", 0);
-			MatrixMultiply.BRowNum = conf.getInt("BRowNum", 0);
-			MatrixMultiply.BColNum = conf.getInt("BColNum", 0);
-			if (MatrixMultiply.BRowNum != MatrixMultiply.AColNum)
-				return;
-			String pathName = ((FileSplit) context.getInputSplit()).getPath().toString();
-			logger.info(pathName);
-			// get matrix value
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			String[] rowVal = value.toString().split("#|\\s+");
-			if (rowVal.length < 3)
-				return;
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-smi">Configuration</span> conf <span class="pl-k">=</span> context<span class="pl-k">.</span>getConfiguration();
+            <span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">ARowNum</span> <span class="pl-k">=</span> conf<span class="pl-k">.</span>getInt(<span class="pl-s"><span class="pl-pds">"</span>ARowNum<span class="pl-pds">"</span></span>, <span class="pl-c1">0</span>);
+            <span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">AColNum</span> <span class="pl-k">=</span> conf<span class="pl-k">.</span>getInt(<span class="pl-s"><span class="pl-pds">"</span>AColNum<span class="pl-pds">"</span></span>, <span class="pl-c1">0</span>);
+            <span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">BRowNum</span> <span class="pl-k">=</span> conf<span class="pl-k">.</span>getInt(<span class="pl-s"><span class="pl-pds">"</span>BRowNum<span class="pl-pds">"</span></span>, <span class="pl-c1">0</span>);
+            <span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">BColNum</span> <span class="pl-k">=</span> conf<span class="pl-k">.</span>getInt(<span class="pl-s"><span class="pl-pds">"</span>BColNum<span class="pl-pds">"</span></span>, <span class="pl-c1">0</span>);
+            <span class="pl-k">if</span> (<span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">BRowNum</span> <span class="pl-k">!=</span> <span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">AColNum</span>)
+                <span class="pl-k">return</span>;
+            <span class="pl-smi">String</span> pathName <span class="pl-k">=</span> ((<span class="pl-smi">FileSplit</span>) context<span class="pl-k">.</span>getInputSplit())<span class="pl-k">.</span>getPath()<span class="pl-k">.</span>toString();
+            logger<span class="pl-k">.</span>info(pathName);
+            <span class="pl-c">// get matrix value</span>
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-k">String</span>[] rowVal <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>#|<span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (rowVal<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">3</span>)
+                <span class="pl-k">return</span>;
 
-			if (pathName.contains("matrix_A")) {
-				int m = Integer.parseInt(rowVal[0]);
-				int n = Integer.parseInt(rowVal[1]);
-				int numVal = Integer.parseInt(rowVal[2]);
-				for (int i = 1; i <= MatrixMultiply.BColNum; i++) {
-					mapKey.set(m + "#" + i + "#" + n);
-					mapValue.set(numVal+"");
-					context.write(mapKey, mapValue);
-				}
-			} else if (pathName.contains("matrix_B")) {
-				int n = Integer.parseInt(rowVal[0]);
-				int k = Integer.parseInt(rowVal[1]);
-				int numVal = Integer.parseInt(rowVal[2]);
+            <span class="pl-k">if</span> (pathName<span class="pl-k">.</span>contains(<span class="pl-s"><span class="pl-pds">"</span>matrix_A<span class="pl-pds">"</span></span>)) {
+                <span class="pl-k">int</span> m <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">0</span>]);
+                <span class="pl-k">int</span> n <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">1</span>]);
+                <span class="pl-k">int</span> numVal <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">2</span>]);
+                <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">1</span>; i <span class="pl-k">&lt;=</span> <span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">BColNum</span>; i<span class="pl-k">++</span>) {
+                    mapKey<span class="pl-k">.</span>set(m <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> i <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> n);
+                    mapValue<span class="pl-k">.</span>set(numVal<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>);
+                    context<span class="pl-k">.</span>write(mapKey, mapValue);
+                }
+            } <span class="pl-k">else</span> <span class="pl-k">if</span> (pathName<span class="pl-k">.</span>contains(<span class="pl-s"><span class="pl-pds">"</span>matrix_B<span class="pl-pds">"</span></span>)) {
+                <span class="pl-k">int</span> n <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">0</span>]);
+                <span class="pl-k">int</span> k <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">1</span>]);
+                <span class="pl-k">int</span> numVal <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">2</span>]);
 
-				for (int i = 1; i <= MatrixMultiply.ARowNum; i++) {
-					mapKey.set(i + "#" + k + "#" + n);
-					mapValue.set(numVal+"");
-					context.write(mapKey, mapValue);
-				}
-			}
-		}
-	}
+                <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">1</span>; i <span class="pl-k">&lt;=</span> <span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span><span class="pl-smi">ARowNum</span>; i<span class="pl-k">++</span>) {
+                    mapKey<span class="pl-k">.</span>set(i <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> k <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> n);
+                    mapValue<span class="pl-k">.</span>set(numVal<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>);
+                    context<span class="pl-k">.</span>write(mapKey, mapValue);
+                }
+            }
+        }
+    }
 
-	public static class MatrixMultiplyPreReducer extends Reducer<Text, Text, Text, Text> {
-		private Text resKey = new Text();
-		private Text result = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MatrixMultiplyPreReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> resKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			int res=1;
-			for (Text val : values) {
-				if (val.toString() == null || val.toString().equals(""))
-					return;
-				res*= Integer.parseInt(val.toString());
-			}
-			result.set(res + "");
-			
-			String newKey=key.toString().substring(0,key.toString().lastIndexOf("#"));
-			resKey.set(newKey);
-			context.write(resKey, result);
-		}
-	}
-	
-	public static class MatrixMultiplyMapper extends Mapper<Object, Text, Text, Text> {
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">int</span> res<span class="pl-k">=</span><span class="pl-c1">1</span>;
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    <span class="pl-k">return</span>;
+                res<span class="pl-k">*=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(val<span class="pl-k">.</span>toString());
+            }
+            result<span class="pl-k">.</span>set(res <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>);
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+            <span class="pl-smi">String</span> newKey<span class="pl-k">=</span>key<span class="pl-k">.</span>toString()<span class="pl-k">.</span>substring(<span class="pl-c1">0</span>,key<span class="pl-k">.</span>toString()<span class="pl-k">.</span>lastIndexOf(<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>));
+            resKey<span class="pl-k">.</span>set(newKey);
+            context<span class="pl-k">.</span>write(resKey, result);
+        }
+    }
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			String[] rowVal = value.toString().split("\\s+");
-			if (rowVal.length < 2)
-				return;
-			mapKey.set(rowVal[0]);
-			mapValue.set(rowVal[1]);
-			context.write(mapKey, mapValue);
-		}
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MatrixMultiplyMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-	public static class MatrixMultiplyReducer extends Reducer<Text, Text, Text, Text> {
-		private Text result = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			int sum=0;
-			for (Text val : values) {
-				sum+=Integer.valueOf(val.toString());
-			}
-			result.set(sum+"");
-			context.write(key, result);
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-k">String</span>[] rowVal <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (rowVal<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">2</span>)
+                <span class="pl-k">return</span>;
+            mapKey<span class="pl-k">.</span>set(rowVal[<span class="pl-c1">0</span>]);
+            mapValue<span class="pl-k">.</span>set(rowVal[<span class="pl-c1">1</span>]);
+            context<span class="pl-k">.</span>write(mapKey, mapValue);
+        }
+    }
 
-	public static void main(String[] args) throws Exception {
-		
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MatrixMultiplyReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">int</span> sum<span class="pl-k">=</span><span class="pl-c1">0</span>;
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                sum<span class="pl-k">+=</span><span class="pl-smi">Integer</span><span class="pl-k">.</span>valueOf(val<span class="pl-k">.</span>toString());
+            }
+            result<span class="pl-k">.</span>set(sum<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>);
+            context<span class="pl-k">.</span>write(key, result);
+        }
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+
+    }
 
 }
-
-```
+</pre></div>
 
 将计算结果排个序：
 
 MatrixSort.java
 
-```java
-package com.ideal;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal</span>;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.DataInput</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.DataOutput</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.IOException</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.WritableComparable;
-import org.apache.hadoop.io.WritableComparator;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Partitioner;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.log4j.Logger;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.IntWritable</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.WritableComparable</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.WritableComparator</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Mapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Partitioner</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Reducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.log4j.Logger</span>;
 
-public class MatrixSort {
-	private static Logger logger = Logger.getLogger(MatrixSort.class);
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MatrixSort</span> {
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">Logger</span> logger <span class="pl-k">=</span> <span class="pl-smi">Logger</span><span class="pl-k">.</span>getLogger(<span class="pl-smi">MatrixSort</span><span class="pl-k">.</span>class);
 
-	public static class IntPair implements WritableComparable<IntPair>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">IntPair</span> <span class="pl-k">implements</span> <span class="pl-e">WritableComparable&lt;<span class="pl-smi">IntPair</span>&gt;</span>
     {
-        int first;
-        int second;
+        <span class="pl-k">int</span> first;
+        <span class="pl-k">int</span> second;
 
-        public void set(int left, int right)
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">set</span>(<span class="pl-k">int</span> <span class="pl-v">left</span>, <span class="pl-k">int</span> <span class="pl-v">right</span>)
         {
-            first = left;
-            second = right;
+            first <span class="pl-k">=</span> left;
+            second <span class="pl-k">=</span> right;
         }
-        public int getFirst()
+        <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getFirst</span>()
         {
-            return first;
+            <span class="pl-k">return</span> first;
         }
-        public int getSecond()
+        <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getSecond</span>()
         {
-            return second;
+            <span class="pl-k">return</span> second;
         }
-        @Override
-        
-        public void readFields(DataInput in) throws IOException
-        {
-            // TODO Auto-generated method stub
-            first = in.readInt();
-            second = in.readInt();
-        }
-        @Override
-        
-        public void write(DataOutput out) throws IOException
-        {
-            // TODO Auto-generated method stub
-            out.writeInt(first);
-            out.writeInt(second);
-        }
-        @Override
-        
-        public int compareTo(IntPair o)
-        {
-            // TODO Auto-generated method stub
-            if (first != o.first)
-            {
-                return first < o.first ? -1 : 1;
-            }
-            else if (second != o.second)
-            {
-                return second < o.second ? -1 : 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        <span class="pl-k">@Override</span>
 
-        @Override
-        //The hashCode() method is used by the HashPartitioner (the default partitioner in MapReduce)
-        public int hashCode()
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">readFields</span>(<span class="pl-smi">DataInput</span> <span class="pl-v">in</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>
         {
-            return first * 157 + second;
+            <span class="pl-c">// TODO Auto-generated method stub</span>
+            first <span class="pl-k">=</span> in<span class="pl-k">.</span>readInt();
+            second <span class="pl-k">=</span> in<span class="pl-k">.</span>readInt();
         }
-        @Override
-        public boolean equals(Object right)
+        <span class="pl-k">@Override</span>
+
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">write</span>(<span class="pl-smi">DataOutput</span> <span class="pl-v">out</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>
         {
-            if (right == null)
-                return false;
-            if (this == right)
-                return true;
-            if (right instanceof IntPair)
+            <span class="pl-c">// TODO Auto-generated method stub</span>
+            out<span class="pl-k">.</span>writeInt(first);
+            out<span class="pl-k">.</span>writeInt(second);
+        }
+        <span class="pl-k">@Override</span>
+
+        <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">compareTo</span>(<span class="pl-smi">IntPair</span> <span class="pl-v">o</span>)
+        {
+            <span class="pl-c">// TODO Auto-generated method stub</span>
+            <span class="pl-k">if</span> (first <span class="pl-k">!=</span> o<span class="pl-k">.</span>first)
             {
-                IntPair r = (IntPair) right;
-                return r.first == first && r.second == second;
+                <span class="pl-k">return</span> first <span class="pl-k">&lt;</span> o<span class="pl-k">.</span>first <span class="pl-k">?</span> <span class="pl-k">-</span><span class="pl-c1">1</span> <span class="pl-k">:</span> <span class="pl-c1">1</span>;
             }
-            else
+            <span class="pl-k">else</span> <span class="pl-k">if</span> (second <span class="pl-k">!=</span> o<span class="pl-k">.</span>second)
             {
-                return false;
+                <span class="pl-k">return</span> second <span class="pl-k">&lt;</span> o<span class="pl-k">.</span>second <span class="pl-k">?</span> <span class="pl-k">-</span><span class="pl-c1">1</span> <span class="pl-k">:</span> <span class="pl-c1">1</span>;
+            }
+            <span class="pl-k">else</span>
+            {
+                <span class="pl-k">return</span> <span class="pl-c1">0</span>;
             }
         }
-    }
-    
-    public static class FirstPartitioner extends Partitioner<IntPair, IntWritable>
-    {
-        @Override
-        public int getPartition(IntPair key, IntWritable value,int numPartitions)
-        {
-            return Math.abs(key.getFirst() * 127) % numPartitions;
-        }
-    }
 
-    
-    public static class GroupingComparator extends WritableComparator
-    {
-        protected GroupingComparator()
+        <span class="pl-k">@Override</span>
+        <span class="pl-c">//The hashCode() method is used by the HashPartitioner (the default partitioner in MapReduce)</span>
+        <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">hashCode</span>()
         {
-            super(IntPair.class, true);
+            <span class="pl-k">return</span> first <span class="pl-k">*</span> <span class="pl-c1">157</span> <span class="pl-k">+</span> second;
         }
-        @SuppressWarnings("rawtypes")
-		@Override
-        //Compare two WritableComparables.
-        public int compare(WritableComparable w1, WritableComparable w2)
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">equals</span>(<span class="pl-smi">Object</span> <span class="pl-v">right</span>)
         {
-            IntPair ip1 = (IntPair) w1;
-            IntPair ip2 = (IntPair) w2;
-            int l = ip1.getSecond();
-            int r = ip2.getSecond();
-            return l == r ? 0 : (l < r ? -1 : 1);
-        }
-    }
-
-
-    
-    public static class MatrixSortMapper extends Mapper<Object, Text, IntPair, IntWritable>
-    {
-        private IntPair intkey = new IntPair();
-        private IntWritable intvalue = new IntWritable();
-        public void map(Object key, Text value, Context context) throws IOException, InterruptedException
-        {
-        	logger.info("map start");
-        	if (value.toString() == null || value.toString().equals(""))
-				return;
-			String[] rowVal = value.toString().split("#|\\s+");
-			if (rowVal.length < 3)
-				return;
-			
-			int left = Integer.parseInt(rowVal[0]);
-			int right = Integer.parseInt(rowVal[1]);
-			int num=Integer.parseInt(rowVal[2]);
-            intkey.set(left, right);
-			intvalue.set(num);
-			logger.info(left+" "+right+" "+num);
-            context.write(intkey, intvalue);
-        }
-    }
-    
-    //
-    public static class MatrixSortReducer extends Reducer<IntPair, IntWritable, Text, IntWritable>
-    {
-        private Text left = new Text();
-        
-        public void reduce(IntPair key, Iterable<IntWritable> values,Context context) throws IOException, InterruptedException
-        {
-            left.set(key.getFirst()+"#"+key.getSecond());
-            for (IntWritable val : values)
+            <span class="pl-k">if</span> (right <span class="pl-k">==</span> <span class="pl-c1">null</span>)
+                <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+            <span class="pl-k">if</span> (<span class="pl-v">this</span> <span class="pl-k">==</span> right)
+                <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+            <span class="pl-k">if</span> (right <span class="pl-k">instanceof</span> <span class="pl-smi">IntPair</span>)
             {
-                context.write(left, val);
-                logger.info(left+" "+val);
+                <span class="pl-smi">IntPair</span> r <span class="pl-k">=</span> (<span class="pl-smi">IntPair</span>) right;
+                <span class="pl-k">return</span> r<span class="pl-k">.</span>first <span class="pl-k">==</span> first <span class="pl-k">&amp;&amp;</span> r<span class="pl-k">.</span>second <span class="pl-k">==</span> second;
+            }
+            <span class="pl-k">else</span>
+            {
+                <span class="pl-k">return</span> <span class="pl-c1">false</span>;
             }
         }
     }
 
-	public static void main(String[] args) throws Exception {
-	
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">FirstPartitioner</span> <span class="pl-k">extends</span> <span class="pl-e">Partitioner&lt;<span class="pl-smi">IntPair</span>, <span class="pl-smi">IntWritable</span>&gt;</span>
+    {
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getPartition</span>(<span class="pl-smi">IntPair</span> <span class="pl-v">key</span>, <span class="pl-smi">IntWritable</span> <span class="pl-v">value</span>,<span class="pl-k">int</span> <span class="pl-v">numPartitions</span>)
+        {
+            <span class="pl-k">return</span> <span class="pl-smi">Math</span><span class="pl-k">.</span>abs(key<span class="pl-k">.</span>getFirst() <span class="pl-k">*</span> <span class="pl-c1">127</span>) <span class="pl-k">%</span> numPartitions;
+        }
+    }
+
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">GroupingComparator</span> <span class="pl-k">extends</span> <span class="pl-e">WritableComparator</span>
+    {
+        <span class="pl-k">protected</span> <span class="pl-en">GroupingComparator</span>()
+        {
+            <span class="pl-v">super</span>(<span class="pl-smi">IntPair</span><span class="pl-k">.</span>class, <span class="pl-c1">true</span>);
+        }
+        <span class="pl-k">@SuppressWarnings</span>(<span class="pl-s"><span class="pl-pds">"</span>rawtypes<span class="pl-pds">"</span></span>)
+        <span class="pl-k">@Override</span>
+        <span class="pl-c">//Compare two WritableComparables.</span>
+        <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">compare</span>(<span class="pl-smi">WritableComparable</span> <span class="pl-v">w1</span>, <span class="pl-smi">WritableComparable</span> <span class="pl-v">w2</span>)
+        {
+            <span class="pl-smi">IntPair</span> ip1 <span class="pl-k">=</span> (<span class="pl-smi">IntPair</span>) w1;
+            <span class="pl-smi">IntPair</span> ip2 <span class="pl-k">=</span> (<span class="pl-smi">IntPair</span>) w2;
+            <span class="pl-k">int</span> l <span class="pl-k">=</span> ip1<span class="pl-k">.</span>getSecond();
+            <span class="pl-k">int</span> r <span class="pl-k">=</span> ip2<span class="pl-k">.</span>getSecond();
+            <span class="pl-k">return</span> l <span class="pl-k">==</span> r <span class="pl-k">?</span> <span class="pl-c1">0</span> <span class="pl-k">:</span> (l <span class="pl-k">&lt;</span> r <span class="pl-k">?</span> <span class="pl-k">-</span><span class="pl-c1">1</span> <span class="pl-k">:</span> <span class="pl-c1">1</span>);
+        }
+    }
+
+
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MatrixSortMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">IntPair</span>, <span class="pl-smi">IntWritable</span>&gt;</span>
+    {
+        <span class="pl-k">private</span> <span class="pl-smi">IntPair</span> intkey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">IntPair</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">IntWritable</span> intvalue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">IntWritable</span>();
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span>
+        {
+            logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>map start<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-k">String</span>[] rowVal <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>#|<span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (rowVal<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">3</span>)
+                <span class="pl-k">return</span>;
+
+            <span class="pl-k">int</span> left <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">0</span>]);
+            <span class="pl-k">int</span> right <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">1</span>]);
+            <span class="pl-k">int</span> num<span class="pl-k">=</span><span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(rowVal[<span class="pl-c1">2</span>]);
+            intkey<span class="pl-k">.</span>set(left, right);
+            intvalue<span class="pl-k">.</span>set(num);
+            logger<span class="pl-k">.</span>info(left<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span><span class="pl-k">+</span>right<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span><span class="pl-k">+</span>num);
+            context<span class="pl-k">.</span>write(intkey, intvalue);
+        }
+    }
+
+    <span class="pl-c">//</span>
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MatrixSortReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">IntPair</span>, <span class="pl-smi">IntWritable</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">IntWritable</span>&gt;</span>
+    {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> left <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">IntPair</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">IntWritable</span>&gt;</span> <span class="pl-v">values</span>,<span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span>
+        {
+            left<span class="pl-k">.</span>set(key<span class="pl-k">.</span>getFirst()<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>key<span class="pl-k">.</span>getSecond());
+            <span class="pl-k">for</span> (<span class="pl-smi">IntWritable</span> val <span class="pl-k">:</span> values)
+            {
+                context<span class="pl-k">.</span>write(left, val);
+                logger<span class="pl-k">.</span>info(left<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span> <span class="pl-pds">"</span></span><span class="pl-k">+</span>val);
+            }
+        }
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+
+    }
 
 }
-
-```
+</pre></div>
 
 总的调用main方法：
 
 MatrixMultiplyAndSort.java
 
-```java
-package com.ideal;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.IntWritable</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
 
-import com.ideal.MatrixMultiply.MatrixMultiplyMapper;
-import com.ideal.MatrixMultiply.MatrixMultiplyPreMapper;
-import com.ideal.MatrixMultiply.MatrixMultiplyPreReducer;
-import com.ideal.MatrixMultiply.MatrixMultiplyReducer;
-import com.ideal.MatrixSort.FirstPartitioner;
-import com.ideal.MatrixSort.GroupingComparator;
-import com.ideal.MatrixSort.IntPair;
-import com.ideal.MatrixSort.MatrixSortMapper;
-import com.ideal.MatrixSort.MatrixSortReducer;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixMultiply.MatrixMultiplyMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixMultiply.MatrixMultiplyPreMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixMultiply.MatrixMultiplyPreReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixMultiply.MatrixMultiplyReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixSort.FirstPartitioner</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixSort.GroupingComparator</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixSort.IntPair</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixSort.MatrixSortMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.MatrixSort.MatrixSortReducer</span>;
 
-public class MatrixMultiplyAndSort {
-	public static void main(String[] args) throws Exception {
-		Configuration conf = new Configuration();
-		conf.set("mapred.jar", "MatrixMultiply.jar");
-		
-		conf.setInt("ARowNum", 3);
-		conf.setInt("AColNum", 3);
-		conf.setInt("BRowNum", 3);
-		conf.setInt("BColNum", 3);
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">MatrixMultiplyAndSort</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+        <span class="pl-smi">Configuration</span> conf <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Configuration</span>();
+        conf<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>mapred.jar<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>MatrixMultiply.jar<span class="pl-pds">"</span></span>);
 
-		String[] ars=new String[]{"/syf/matrix_test/input/input1","/syf/matrix_test/output/output_multiply_1"};  
-		String[] otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("usage: matrix multiply1 <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job1 = Job.getInstance(conf, "matrix multiply1");
-		job1.setJarByClass(MatrixMultiply.class);
-		job1.setMapperClass(MatrixMultiplyPreMapper.class);
-		job1.setReducerClass(MatrixMultiplyPreReducer.class);
-		job1.setOutputKeyClass(Text.class);
-		job1.setOutputValueClass(Text.class);
+        conf<span class="pl-k">.</span>setInt(<span class="pl-s"><span class="pl-pds">"</span>ARowNum<span class="pl-pds">"</span></span>, <span class="pl-c1">3</span>);
+        conf<span class="pl-k">.</span>setInt(<span class="pl-s"><span class="pl-pds">"</span>AColNum<span class="pl-pds">"</span></span>, <span class="pl-c1">3</span>);
+        conf<span class="pl-k">.</span>setInt(<span class="pl-s"><span class="pl-pds">"</span>BRowNum<span class="pl-pds">"</span></span>, <span class="pl-c1">3</span>);
+        conf<span class="pl-k">.</span>setInt(<span class="pl-s"><span class="pl-pds">"</span>BColNum<span class="pl-pds">"</span></span>, <span class="pl-c1">3</span>);
 
-		for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job1, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job1, new Path(otherArgs[otherArgs.length - 1]));
-		job1.waitForCompletion(true);
+        <span class="pl-k">String</span>[] ars<span class="pl-k">=</span><span class="pl-k">new</span> <span class="pl-smi">String</span>[]{<span class="pl-s"><span class="pl-pds">"</span>/syf/matrix_test/input/input1<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>/syf/matrix_test/output/output_multiply_1<span class="pl-pds">"</span></span>};  
+        <span class="pl-k">String</span>[] otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: matrix multiply1 &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job1 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>matrix multiply1<span class="pl-pds">"</span></span>);
+        job1<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span>class);
+        job1<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">MatrixMultiplyPreMapper</span><span class="pl-k">.</span>class);
+        job1<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">MatrixMultiplyPreReducer</span><span class="pl-k">.</span>class);
+        job1<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job1<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-		//
-		ars=new String[]{"/syf/matrix_test/output/output_multiply_1","/syf/matrix_test/output/output_multiply_2"}; 
-		otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("usage: matrix multiply2 <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job2 = Job.getInstance(conf, "matrix multiply2");
-		job2.setJarByClass(MatrixMultiply.class);
-		job2.setMapperClass(MatrixMultiplyMapper.class);
-		job2.setReducerClass(MatrixMultiplyReducer.class);
-		
-        job2.setOutputKeyClass(Text.class);
-        job2.setOutputValueClass(Text.class);
-        for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job2, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job2, new Path(otherArgs[otherArgs.length - 1]));
-		job2.waitForCompletion(true);
-		
-		//
-		ars=new String[]{"/syf/matrix_test/output/output_multiply_2","/syf/matrix_test/output/output_sort"}; 
-		otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("usage: matrix sort <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job3 = Job.getInstance(conf, "matrix sort");
-		job3.setJarByClass(MatrixSort.class);
-		job3.setMapperClass(MatrixSortMapper.class);
-		job3.setReducerClass(MatrixSortReducer.class);
-        job3.setPartitionerClass(FirstPartitioner.class);
-        job3.setGroupingComparatorClass(GroupingComparator.class);
-		
-        job3.setMapOutputKeyClass(IntPair.class);
-        job3.setMapOutputValueClass(IntWritable.class);
-        job3.setOutputKeyClass(Text.class);
-        job3.setOutputValueClass(IntWritable.class);
-        for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job3, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job3, new Path(otherArgs[otherArgs.length - 1]));
-		job3.waitForCompletion(true);
-	}
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job1, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job1, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job1<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
+
+        <span class="pl-c">//</span>
+        ars<span class="pl-k">=</span><span class="pl-k">new</span> <span class="pl-smi">String</span>[]{<span class="pl-s"><span class="pl-pds">"</span>/syf/matrix_test/output/output_multiply_1<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>/syf/matrix_test/output/output_multiply_2<span class="pl-pds">"</span></span>}; 
+        otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: matrix multiply2 &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job2 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>matrix multiply2<span class="pl-pds">"</span></span>);
+        job2<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">MatrixMultiply</span><span class="pl-k">.</span>class);
+        job2<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">MatrixMultiplyMapper</span><span class="pl-k">.</span>class);
+        job2<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">MatrixMultiplyReducer</span><span class="pl-k">.</span>class);
+
+        job2<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job2<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job2, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job2, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job2<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
+
+        <span class="pl-c">//</span>
+        ars<span class="pl-k">=</span><span class="pl-k">new</span> <span class="pl-smi">String</span>[]{<span class="pl-s"><span class="pl-pds">"</span>/syf/matrix_test/output/output_multiply_2<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>/syf/matrix_test/output/output_sort<span class="pl-pds">"</span></span>}; 
+        otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: matrix sort &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job3 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>matrix sort<span class="pl-pds">"</span></span>);
+        job3<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">MatrixSort</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">MatrixSortMapper</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">MatrixSortReducer</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setPartitionerClass(<span class="pl-smi">FirstPartitioner</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setGroupingComparatorClass(<span class="pl-smi">GroupingComparator</span><span class="pl-k">.</span>class);
+
+        job3<span class="pl-k">.</span>setMapOutputKeyClass(<span class="pl-smi">IntPair</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setMapOutputValueClass(<span class="pl-smi">IntWritable</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">IntWritable</span><span class="pl-k">.</span>class);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job3, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job3, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job3<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
+    }
 
 }
-
-```
+</pre></div>
