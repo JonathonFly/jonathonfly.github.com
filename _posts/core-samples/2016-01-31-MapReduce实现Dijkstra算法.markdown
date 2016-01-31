@@ -211,902 +211,890 @@ tags : [hadoop, mapreduce, dijkstra]
 每一个节点数据的结构
 Node.java
 
-```java
-package com.ideal.netcare;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal.netcare</span>;
 
-public class Node {
-	private String id;
-	private String dis;
-	private String adjacencyList;
-	private String preId;
-	private String color="w";
-	public Node(){
-		this.color="w";
-	}
-	
-	public Node(String nodeString){
-		String[] arr=nodeString.split("#|\\s+");
-		this.id=arr[0];
-		this.dis=arr[1];
-		this.adjacencyList=arr[2];
-		this.preId=arr[3];
-		this.color=arr[4];
-	}
-	public String getId() {
-		return id;
-	}
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Node</span> {
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> id;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> dis;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> adjacencyList;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> preId;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> color<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>;
+    <span class="pl-k">public</span> <span class="pl-en">Node</span>(){
+        <span class="pl-v">this</span><span class="pl-k">.</span>color<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getPreId() {
-		return preId;
-	}
+    <span class="pl-k">public</span> <span class="pl-en">Node</span>(<span class="pl-smi">String</span> <span class="pl-v">nodeString</span>){
+        <span class="pl-k">String</span>[] arr<span class="pl-k">=</span>nodeString<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>#|<span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+        <span class="pl-v">this</span><span class="pl-k">.</span>id<span class="pl-k">=</span>arr[<span class="pl-c1">0</span>];
+        <span class="pl-v">this</span><span class="pl-k">.</span>dis<span class="pl-k">=</span>arr[<span class="pl-c1">1</span>];
+        <span class="pl-v">this</span><span class="pl-k">.</span>adjacencyList<span class="pl-k">=</span>arr[<span class="pl-c1">2</span>];
+        <span class="pl-v">this</span><span class="pl-k">.</span>preId<span class="pl-k">=</span>arr[<span class="pl-c1">3</span>];
+        <span class="pl-v">this</span><span class="pl-k">.</span>color<span class="pl-k">=</span>arr[<span class="pl-c1">4</span>];
+    }
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getId</span>() {
+        <span class="pl-k">return</span> id;
+    }
 
-	public void setPreId(String preId) {
-		this.preId = preId;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setId</span>(<span class="pl-smi">String</span> <span class="pl-v">id</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>id <span class="pl-k">=</span> id;
+    }
 
-	public String getDis() {
-		return dis;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getPreId</span>() {
+        <span class="pl-k">return</span> preId;
+    }
 
-	public void setDis(String dis) {
-		this.dis = dis;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setPreId</span>(<span class="pl-smi">String</span> <span class="pl-v">preId</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>preId <span class="pl-k">=</span> preId;
+    }
 
-	public String getAdjacencyList() {
-		return adjacencyList;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getDis</span>() {
+        <span class="pl-k">return</span> dis;
+    }
 
-	public void setAdjacencyList(String adjacencyList) {
-		this.adjacencyList = adjacencyList;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setDis</span>(<span class="pl-smi">String</span> <span class="pl-v">dis</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>dis <span class="pl-k">=</span> dis;
+    }
 
-	public String getColor() {
-		return color;
-	}
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getAdjacencyList</span>() {
+        <span class="pl-k">return</span> adjacencyList;
+    }
 
-	public void setColor(String color) {
-		this.color = color;
-	}
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setAdjacencyList</span>(<span class="pl-smi">String</span> <span class="pl-v">adjacencyList</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>adjacencyList <span class="pl-k">=</span> adjacencyList;
+    }
+
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getColor</span>() {
+        <span class="pl-k">return</span> color;
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setColor</span>(<span class="pl-smi">String</span> <span class="pl-v">color</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>color <span class="pl-k">=</span> color;
+    }
 }
-
-```
+</pre></div>
 
 计算邻接表
 AdjListWithPath.java
 
-```java
-package com.ideal.netcare;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal.netcare</span>;
 
-import java.io.IOException;
-import java.util.Scanner;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.IOException</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Scanner</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Mapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Reducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
 
-public class AdjListWithPath {
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">AdjListWithPath</span> {
 
-	private static Scanner sc;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">Scanner</span> sc;
 
-	public static class AdjListWithPathMapper extends Mapper<Object, Text, Text, Text> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">AdjListWithPathMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			// edge A#B#10
-			// vertex A
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			String[] arr = value.toString().split("\\s+");
-			if (arr.length < 2)
-				return;
-			if (arr[0].equals("edge")) {
-				String[] edge = arr[1].split("#");
-				// A#B#10
-				if (edge.length < 3)
-					return;
-				// A
-				mapKey.set(edge[0]);
-				// B-10
-				mapValue.set(edge[1] + "-" + edge[2]);
-				context.write(mapKey, mapValue);
-			}
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-c">// edge A#B#10</span>
+            <span class="pl-c">// vertex A</span>
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (arr<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">2</span>)
+                <span class="pl-k">return</span>;
+            <span class="pl-k">if</span> (arr[<span class="pl-c1">0</span>]<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>edge<span class="pl-pds">"</span></span>)) {
+                <span class="pl-k">String</span>[] edge <span class="pl-k">=</span> arr[<span class="pl-c1">1</span>]<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>);
+                <span class="pl-c">// A#B#10</span>
+                <span class="pl-k">if</span> (edge<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">3</span>)
+                    <span class="pl-k">return</span>;
+                <span class="pl-c">// A</span>
+                mapKey<span class="pl-k">.</span>set(edge[<span class="pl-c1">0</span>]);
+                <span class="pl-c">// B-10</span>
+                mapValue<span class="pl-k">.</span>set(edge[<span class="pl-c1">1</span>] <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span> <span class="pl-k">+</span> edge[<span class="pl-c1">2</span>]);
+                context<span class="pl-k">.</span>write(mapKey, mapValue);
+            }
+        }
+    }
 
-	public static class AdjListWithPathReducer extends Reducer<Text, Text, Text, Text> {
-		private Text result = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">AdjListWithPathReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			// A B-10
-			Configuration conf = context.getConfiguration();
-			String startVertex = conf.get("startVertex");
-			String adjList = "";
-			if (startVertex.equals(key.toString())) {
-				// begin vertex
-				for (Text val : values) {
-					if (val.toString() == null || val.toString().equals(""))
-						return;
-					adjList += val.toString() + ",";
-				}
-				// delete the end ','
-				if (adjList.length() > 0)
-					adjList = adjList.substring(0, adjList.length() - 1);
-				String res = "0#" + adjList + "#"+startVertex+"#g";
-				result.set(res);
-				context.write(key, result);
-			} else {
-				// other vertexes
-				for (Text val : values) {
-					if (val.toString() == null || val.toString().equals(""))
-						return;
-					adjList += val.toString() + ",";
-				}
-				// delete the end ','
-				if (adjList.length() > 0)
-					adjList = adjList.substring(0, adjList.length() - 1);
-				String res = "<>#" + adjList+ "#"+startVertex + "#w";
-				result.set(res);
-				context.write(key, result);
-			}
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-c">// A B-10</span>
+            <span class="pl-smi">Configuration</span> conf <span class="pl-k">=</span> context<span class="pl-k">.</span>getConfiguration();
+            <span class="pl-smi">String</span> startVertex <span class="pl-k">=</span> conf<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>startVertex<span class="pl-pds">"</span></span>);
+            <span class="pl-smi">String</span> adjList <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+            <span class="pl-k">if</span> (startVertex<span class="pl-k">.</span>equals(key<span class="pl-k">.</span>toString())) {
+                <span class="pl-c">// begin vertex</span>
+                <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                    <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                        <span class="pl-k">return</span>;
+                    adjList <span class="pl-k">+=</span> val<span class="pl-k">.</span>toString() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>,<span class="pl-pds">"</span></span>;
+                }
+                <span class="pl-c">// delete the end ','</span>
+                <span class="pl-k">if</span> (adjList<span class="pl-k">.</span>length() <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>)
+                    adjList <span class="pl-k">=</span> adjList<span class="pl-k">.</span>substring(<span class="pl-c1">0</span>, adjList<span class="pl-k">.</span>length() <span class="pl-k">-</span> <span class="pl-c1">1</span>);
+                <span class="pl-smi">String</span> res <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>0#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> adjList <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>startVertex<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span>#g<span class="pl-pds">"</span></span>;
+                result<span class="pl-k">.</span>set(res);
+                context<span class="pl-k">.</span>write(key, result);
+            } <span class="pl-k">else</span> {
+                <span class="pl-c">// other vertexes</span>
+                <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                    <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                        <span class="pl-k">return</span>;
+                    adjList <span class="pl-k">+=</span> val<span class="pl-k">.</span>toString() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>,<span class="pl-pds">"</span></span>;
+                }
+                <span class="pl-c">// delete the end ','</span>
+                <span class="pl-k">if</span> (adjList<span class="pl-k">.</span>length() <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>)
+                    adjList <span class="pl-k">=</span> adjList<span class="pl-k">.</span>substring(<span class="pl-c1">0</span>, adjList<span class="pl-k">.</span>length() <span class="pl-k">-</span> <span class="pl-c1">1</span>);
+                <span class="pl-smi">String</span> res <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> adjList<span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>startVertex <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#w<span class="pl-pds">"</span></span>;
+                result<span class="pl-k">.</span>set(res);
+                context<span class="pl-k">.</span>write(key, result);
+            }
+        }
+    }
 
-	public static void main(String[] args) throws Exception {
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+    }
 
 }
-
-```
+</pre></div>
 
 计算最短路径
 DijkstraWithPath.java
 
-```java
-package com.ideal.netcare;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal.netcare</span>;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.BufferedReader</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.IOException</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.InputStreamReader</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.FileSystem</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.IntWritable</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Mapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Reducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
 
-public class DijkstraWithPath {
-	public static class DijkstraWithPathMapper extends Mapper<Object, Text, Text, Text> {
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">DijkstraWithPath</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">DijkstraWithPathMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			// A 0#C-5,B-10#A#g
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			Node node = new Node(value.toString());
-			if (node.getColor().equals("g")) {
-				if (node.getAdjacencyList() != null && !node.getAdjacencyList().equals("")) {
-					// C-5 B-10
-					String[] arr = node.getAdjacencyList().split(",");
-					if (arr.length > 0) {
-						for (int i = 0; i < arr.length; i++) {
-							String[] edge = arr[i].split("-");
-							// C 5
-							if (edge.length == 2) {
-								String id = edge[0];
-								String length = "";
-								if (node.getDis().equals("<>")) {
-									length = node.getDis();
-								} else {
-									//currentDis+adjEdgeLength
-									length = (Integer.parseInt(node.getDis()) + Integer.parseInt(edge[1])) + "";
-								}
-								mapKey.set(id);
-								// B 10##A#w C 5##A#w
-								mapValue.set(length + "##" + node.getId() + "#w");
-								context.write(mapKey, mapValue);
-							}
-						}
-					}
-					// make the grey node black
-					mapKey.set(node.getId());
-					mapValue.set(node.getDis() + "#" + node.getAdjacencyList() + "#" + node.getPreId() + "#b");
-					context.write(mapKey, mapValue);
-				}
-			} else {
-				mapKey.set(node.getId());
-				mapValue.set(node.getDis() + "#" + node.getAdjacencyList() + "#" + node.getPreId() + "#" + node.getColor());
-				context.write(mapKey, mapValue);
-			}
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-c">// A 0#C-5,B-10#A#g</span>
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-smi">Node</span> node <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Node</span>(value<span class="pl-k">.</span>toString());
+            <span class="pl-k">if</span> (node<span class="pl-k">.</span>getColor()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>g<span class="pl-pds">"</span></span>)) {
+                <span class="pl-k">if</span> (node<span class="pl-k">.</span>getAdjacencyList() <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>node<span class="pl-k">.</span>getAdjacencyList()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>)) {
+                    <span class="pl-c">// C-5 B-10</span>
+                    <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> node<span class="pl-k">.</span>getAdjacencyList()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>,<span class="pl-pds">"</span></span>);
+                    <span class="pl-k">if</span> (arr<span class="pl-k">.</span>length <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+                        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> arr<span class="pl-k">.</span>length; i<span class="pl-k">++</span>) {
+                            <span class="pl-k">String</span>[] edge <span class="pl-k">=</span> arr[i]<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span>);
+                            <span class="pl-c">// C 5</span>
+                            <span class="pl-k">if</span> (edge<span class="pl-k">.</span>length <span class="pl-k">==</span> <span class="pl-c1">2</span>) {
+                                <span class="pl-smi">String</span> id <span class="pl-k">=</span> edge[<span class="pl-c1">0</span>];
+                                <span class="pl-smi">String</span> length <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+                                <span class="pl-k">if</span> (node<span class="pl-k">.</span>getDis()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;<span class="pl-pds">"</span></span>)) {
+                                    length <span class="pl-k">=</span> node<span class="pl-k">.</span>getDis();
+                                } <span class="pl-k">else</span> {
+                                    <span class="pl-c">//currentDis+adjEdgeLength</span>
+                                    length <span class="pl-k">=</span> (<span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(node<span class="pl-k">.</span>getDis()) <span class="pl-k">+</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(edge[<span class="pl-c1">1</span>])) <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+                                }
+                                mapKey<span class="pl-k">.</span>set(id);
+                                <span class="pl-c">// B 10##A#w C 5##A#w</span>
+                                mapValue<span class="pl-k">.</span>set(length <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>##<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#w<span class="pl-pds">"</span></span>);
+                                context<span class="pl-k">.</span>write(mapKey, mapValue);
+                            }
+                        }
+                    }
+                    <span class="pl-c">// make the grey node black</span>
+                    mapKey<span class="pl-k">.</span>set(node<span class="pl-k">.</span>getId());
+                    mapValue<span class="pl-k">.</span>set(node<span class="pl-k">.</span>getDis() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getAdjacencyList() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getPreId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#b<span class="pl-pds">"</span></span>);
+                    context<span class="pl-k">.</span>write(mapKey, mapValue);
+                }
+            } <span class="pl-k">else</span> {
+                mapKey<span class="pl-k">.</span>set(node<span class="pl-k">.</span>getId());
+                mapValue<span class="pl-k">.</span>set(node<span class="pl-k">.</span>getDis() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getAdjacencyList() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getPreId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getColor());
+                context<span class="pl-k">.</span>write(mapKey, mapValue);
+            }
+        }
+    }
 
-	public static class DijkstraWithPathReducer extends Reducer<Text, Text, Text, Text> {
-		private Text result = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">DijkstraWithPathReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			// find the minDistance of the same key
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-c">// find the minDistance of the same key</span>
 
-			// results
-			int mindis=0;
-			String adj=null;
-			String pre=null;
-			String colr=null;
-			boolean init = true;
+            <span class="pl-c">// results</span>
+            <span class="pl-k">int</span> mindis<span class="pl-k">=</span><span class="pl-c1">0</span>;
+            <span class="pl-smi">String</span> adj<span class="pl-k">=</span><span class="pl-c1">null</span>;
+            <span class="pl-smi">String</span> pre<span class="pl-k">=</span><span class="pl-c1">null</span>;
+            <span class="pl-smi">String</span> colr<span class="pl-k">=</span><span class="pl-c1">null</span>;
+            <span class="pl-k">boolean</span> init <span class="pl-k">=</span> <span class="pl-c1">true</span>;
 
-			for (Text val : values) {
-				if (val.toString() == null || val.toString().equals(""))
-					return;
-				String[] arr = val.toString().split("#");
-				if (arr.length < 4)
-					return;
-				String dis = arr[0];
-				String adjList = arr[1];
-				String preId = arr[2];
-				String color = arr[3];
-				// init the results
-				if (init) {
-					if (!dis.equals("<>"))
-						mindis = Integer.parseInt(dis);
-					else
-						mindis = Integer.MAX_VALUE;
-					adj = adjList;
-					pre = preId;
-					colr = color;
-					//has inited
-					init = false;
-				} else {
-					// if color is black ,break the loop
-					if (color.equals("b")) {
-						if (!dis.equals("<>")) {
-							mindis = Integer.parseInt(dis);
-						}
-						// adjList
-						adj = adjList;
-						// Pre node id
-						pre = preId;
-						// color
-						colr = color;
-						break;
-					} else {
-						if (!dis.equals("<>")) {
-							if (Integer.parseInt(dis) < mindis) {
-								// the min dis
-								mindis = Integer.parseInt(dis);
-								// the pre node id
-								pre = preId;
-							}
-						}
-						// the adjlist
-						if (adjList != null && !adjList.equals("")) {
-							adj = adjList;
-						}
-					}
-				}
-			}
-			if (mindis != Integer.MAX_VALUE) {
-				result.set(mindis + "#" + adj + "#" + pre + "#" + colr);
-			} else {
-				result.set("<>#" + adj + "#" + pre + "#" + colr);
-			}
-			context.write(key, result);
-		}
-	}
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    <span class="pl-k">return</span>;
+                <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>);
+                <span class="pl-k">if</span> (arr<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">4</span>)
+                    <span class="pl-k">return</span>;
+                <span class="pl-smi">String</span> dis <span class="pl-k">=</span> arr[<span class="pl-c1">0</span>];
+                <span class="pl-smi">String</span> adjList <span class="pl-k">=</span> arr[<span class="pl-c1">1</span>];
+                <span class="pl-smi">String</span> preId <span class="pl-k">=</span> arr[<span class="pl-c1">2</span>];
+                <span class="pl-smi">String</span> color <span class="pl-k">=</span> arr[<span class="pl-c1">3</span>];
+                <span class="pl-c">// init the results</span>
+                <span class="pl-k">if</span> (init) {
+                    <span class="pl-k">if</span> (<span class="pl-k">!</span>dis<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;<span class="pl-pds">"</span></span>))
+                        mindis <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(dis);
+                    <span class="pl-k">else</span>
+                        mindis <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-c1"><span class="pl-k">.</span>MAX_VALUE</span>;
+                    adj <span class="pl-k">=</span> adjList;
+                    pre <span class="pl-k">=</span> preId;
+                    colr <span class="pl-k">=</span> color;
+                    <span class="pl-c">//has inited</span>
+                    init <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+                } <span class="pl-k">else</span> {
+                    <span class="pl-c">// if color is black ,break the loop</span>
+                    <span class="pl-k">if</span> (color<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>)) {
+                        <span class="pl-k">if</span> (<span class="pl-k">!</span>dis<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;<span class="pl-pds">"</span></span>)) {
+                            mindis <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(dis);
+                        }
+                        <span class="pl-c">// adjList</span>
+                        adj <span class="pl-k">=</span> adjList;
+                        <span class="pl-c">// Pre node id</span>
+                        pre <span class="pl-k">=</span> preId;
+                        <span class="pl-c">// color</span>
+                        colr <span class="pl-k">=</span> color;
+                        <span class="pl-k">break</span>;
+                    } <span class="pl-k">else</span> {
+                        <span class="pl-k">if</span> (<span class="pl-k">!</span>dis<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;<span class="pl-pds">"</span></span>)) {
+                            <span class="pl-k">if</span> (<span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(dis) <span class="pl-k">&lt;</span> mindis) {
+                                <span class="pl-c">// the min dis</span>
+                                mindis <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(dis);
+                                <span class="pl-c">// the pre node id</span>
+                                pre <span class="pl-k">=</span> preId;
+                            }
+                        }
+                        <span class="pl-c">// the adjlist</span>
+                        <span class="pl-k">if</span> (adjList <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>adjList<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>)) {
+                            adj <span class="pl-k">=</span> adjList;
+                        }
+                    }
+                }
+            }
+            <span class="pl-k">if</span> (mindis <span class="pl-k">!=</span> <span class="pl-smi">Integer</span><span class="pl-c1"><span class="pl-k">.</span>MAX_VALUE</span>) {
+                result<span class="pl-k">.</span>set(mindis <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> adj <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> pre <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> colr);
+            } <span class="pl-k">else</span> {
+                result<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> adj <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> pre <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> colr);
+            }
+            context<span class="pl-k">.</span>write(key, result);
+        }
+    }
 
-	public static class MinDisSortWithPathMapper extends Mapper<Object, Text, IntWritable, Text> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MinDisSortWithPathMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">IntWritable</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-		private IntWritable mapKey = new IntWritable();
-		private Text mapValue = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">IntWritable</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">IntWritable</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			Node node = new Node(value.toString());
-			int dis = Integer.MAX_VALUE;
-			if (!node.getDis().equals("<>")) {
-				dis = Integer.parseInt(node.getDis());
-			}
-			mapKey.set(dis);
-			mapValue.set(node.getId() + "#" + node.getAdjacencyList() + "#"+node.getPreId()+"#" + node.getColor());
-			//0 A#B-10,C-5#A#b
-			context.write(mapKey, mapValue);
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-smi">Node</span> node <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Node</span>(value<span class="pl-k">.</span>toString());
+            <span class="pl-k">int</span> dis <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-c1"><span class="pl-k">.</span>MAX_VALUE</span>;
+            <span class="pl-k">if</span> (<span class="pl-k">!</span>node<span class="pl-k">.</span>getDis()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;<span class="pl-pds">"</span></span>)) {
+                dis <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(node<span class="pl-k">.</span>getDis());
+            }
+            mapKey<span class="pl-k">.</span>set(dis);
+            mapValue<span class="pl-k">.</span>set(node<span class="pl-k">.</span>getId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getAdjacencyList() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>node<span class="pl-k">.</span>getPreId()<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getColor());
+            <span class="pl-c">//0 A#B-10,C-5#A#b</span>
+            context<span class="pl-k">.</span>write(mapKey, mapValue);
+        }
+    }
 
-	public static class MinDisSortWithPathReducer extends Reducer<IntWritable, Text, Text, Text> {
-		private Text key1 = new Text();
-		private Text result = new Text();
-		// find the mindis of white color node
-		private boolean flag = true;
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">MinDisSortWithPathReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">IntWritable</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> key1 <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-c">// find the mindis of white color node</span>
+        <span class="pl-k">private</span> <span class="pl-k">boolean</span> flag <span class="pl-k">=</span> <span class="pl-c1">true</span>;
 
-		public void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			for (Text val : values) {
-				//A		B-10,C-5		A		b
-				String[] arr = val.toString().split("#");
-				if (arr.length != 4)
-					return;
-				// has sort distance esc, find the first white node
-				if (flag && arr[3].equals("w")) {
-					key1.set(arr[0]);
-					// make its color grey
-					if (key.get() == Integer.MAX_VALUE)
-						result.set("<>#" + arr[1] + "#"+arr[2]+"#g");
-					else
-						result.set(key.get() + "#" + arr[1]+ "#"+arr[2] + "#g");
-					flag = false;
-					context.write(key1, result);
-				} else {
-					// other nodes don't change
-					key1.set(arr[0]);
-					if (key.get() == Integer.MAX_VALUE)
-						result.set("<>#" + arr[1] + "#"+arr[2]+"#" + arr[3]);
-					else
-						result.set(key.get() + "#" + arr[1] + "#"+arr[2]+"#" + arr[3]);
-					context.write(key1, result);
-				}
-			}
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">IntWritable</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-c">//A     B-10,C-5        A       b</span>
+                <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>);
+                <span class="pl-k">if</span> (arr<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">4</span>)
+                    <span class="pl-k">return</span>;
+                <span class="pl-c">// has sort distance esc, find the first white node</span>
+                <span class="pl-k">if</span> (flag <span class="pl-k">&amp;&amp;</span> arr[<span class="pl-c1">3</span>]<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>)) {
+                    key1<span class="pl-k">.</span>set(arr[<span class="pl-c1">0</span>]);
+                    <span class="pl-c">// make its color grey</span>
+                    <span class="pl-k">if</span> (key<span class="pl-k">.</span>get() <span class="pl-k">==</span> <span class="pl-smi">Integer</span><span class="pl-c1"><span class="pl-k">.</span>MAX_VALUE</span>)
+                        result<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">1</span>] <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>arr[<span class="pl-c1">2</span>]<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span>#g<span class="pl-pds">"</span></span>);
+                    <span class="pl-k">else</span>
+                        result<span class="pl-k">.</span>set(key<span class="pl-k">.</span>get() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">1</span>]<span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>arr[<span class="pl-c1">2</span>] <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#g<span class="pl-pds">"</span></span>);
+                    flag <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+                    context<span class="pl-k">.</span>write(key1, result);
+                } <span class="pl-k">else</span> {
+                    <span class="pl-c">// other nodes don't change</span>
+                    key1<span class="pl-k">.</span>set(arr[<span class="pl-c1">0</span>]);
+                    <span class="pl-k">if</span> (key<span class="pl-k">.</span>get() <span class="pl-k">==</span> <span class="pl-smi">Integer</span><span class="pl-c1"><span class="pl-k">.</span>MAX_VALUE</span>)
+                        result<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>&lt;&gt;#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">1</span>] <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>arr[<span class="pl-c1">2</span>]<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">3</span>]);
+                    <span class="pl-k">else</span>
+                        result<span class="pl-k">.</span>set(key<span class="pl-k">.</span>get() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">1</span>] <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span><span class="pl-k">+</span>arr[<span class="pl-c1">2</span>]<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">3</span>]);
+                    context<span class="pl-k">.</span>write(key1, result);
+                }
+            }
+        }
+    }
 
-	public static void main(String[] args) throws Exception {
-		
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+
+    }
 }
-
-```
+</pre></div>
 
 计算最短路径上的所有顶点
 PathResult.java
 
-```java
-package com.ideal.netcare;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal.netcare</span>;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.BufferedReader</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.IOException</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.InputStreamReader</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.ArrayList</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.List</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.FileSystem</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Mapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Reducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
 
-public class PathResult {
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">PathResult</span> {
 
-	public static class PathPreMapper extends Mapper<Object, Text, Text, Text> {
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">PathPreMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			// the bigin vertex
-			Configuration conf = context.getConfiguration();
-			String startVertex = conf.get("startVertex");
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-c">// the bigin vertex</span>
+            <span class="pl-smi">Configuration</span> conf <span class="pl-k">=</span> context<span class="pl-k">.</span>getConfiguration();
+            <span class="pl-smi">String</span> startVertex <span class="pl-k">=</span> conf<span class="pl-k">.</span>get(<span class="pl-s"><span class="pl-pds">"</span>startVertex<span class="pl-pds">"</span></span>);
 
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			Node node = new Node(value.toString());
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-smi">Node</span> node <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Node</span>(value<span class="pl-k">.</span>toString());
 
-			if (node.getPreId().equals(startVertex)) {
-				mapKey.set("b");
-				mapValue.set(node.getPreId() + "-" + node.getId());
-			} else {
-				mapKey.set("w");
-				mapValue.set(node.getPreId() + "-" + node.getId());
-			}
-			context.write(mapKey, mapValue);
-		}
-	}
+            <span class="pl-k">if</span> (node<span class="pl-k">.</span>getPreId()<span class="pl-k">.</span>equals(startVertex)) {
+                mapKey<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>);
+                mapValue<span class="pl-k">.</span>set(node<span class="pl-k">.</span>getPreId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getId());
+            } <span class="pl-k">else</span> {
+                mapKey<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>);
+                mapValue<span class="pl-k">.</span>set(node<span class="pl-k">.</span>getPreId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span> <span class="pl-k">+</span> node<span class="pl-k">.</span>getId());
+            }
+            context<span class="pl-k">.</span>write(mapKey, mapValue);
+        }
+    }
 
-	public static class PathPreReducer extends Reducer<Text, Text, Text, Text> {
-		private Text result = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">PathPreReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			for (Text val : values) {
-				if (val.toString() == null || val.toString().equals(""))
-					return;
-				result.set(val.toString());
-				context.write(key, result);
-			}
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    <span class="pl-k">return</span>;
+                result<span class="pl-k">.</span>set(val<span class="pl-k">.</span>toString());
+                context<span class="pl-k">.</span>write(key, result);
+            }
+        }
+    }
 
-	public static class PathMapper extends Mapper<Object, Text, Text, Text> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">PathMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			if (value.toString() == null || value.toString().equals(""))
-				return;
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
 
-			// b A-C
-			String[] arr = value.toString().split("\\s+");
-			if (arr[0].equals("b")) {
-				// has find the begin vertex ,get the string after the last "-" to be key
-				String last = arr[1].substring(arr[1].lastIndexOf("-") + 1);
-				// C b#A-C
-				mapKey.set(last);
-				mapValue.set("b#" + arr[1]);
-			} else {
-				// w C-E
-				// haven't find the begin vertex ,get the string before the first "-" to be key
-				String first = arr[1].substring(0, arr[1].indexOf("-"));
-				// C w#C-E
-				mapKey.set(first);
-				mapValue.set("w#" + arr[1]);
-			}
-			context.write(mapKey, mapValue);
-		}
-	}
+            <span class="pl-c">// b A-C</span>
+            <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (arr[<span class="pl-c1">0</span>]<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>)) {
+                <span class="pl-c">// has find the begin vertex ,get the string after the last "-" to be key</span>
+                <span class="pl-smi">String</span> last <span class="pl-k">=</span> arr[<span class="pl-c1">1</span>]<span class="pl-k">.</span>substring(arr[<span class="pl-c1">1</span>]<span class="pl-k">.</span>lastIndexOf(<span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span>) <span class="pl-k">+</span> <span class="pl-c1">1</span>);
+                <span class="pl-c">// C b#A-C</span>
+                mapKey<span class="pl-k">.</span>set(last);
+                mapValue<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>b#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">1</span>]);
+            } <span class="pl-k">else</span> {
+                <span class="pl-c">// w C-E</span>
+                <span class="pl-c">// haven't find the begin vertex ,get the string before the first "-" to be key</span>
+                <span class="pl-smi">String</span> first <span class="pl-k">=</span> arr[<span class="pl-c1">1</span>]<span class="pl-k">.</span>substring(<span class="pl-c1">0</span>, arr[<span class="pl-c1">1</span>]<span class="pl-k">.</span>indexOf(<span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span>));
+                <span class="pl-c">// C w#C-E</span>
+                mapKey<span class="pl-k">.</span>set(first);
+                mapValue<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>w#<span class="pl-pds">"</span></span> <span class="pl-k">+</span> arr[<span class="pl-c1">1</span>]);
+            }
+            context<span class="pl-k">.</span>write(mapKey, mapValue);
+        }
+    }
 
-	public static class PathReducer extends Reducer<Text, Text, Text, Text> {
-		private Text newKey = new Text();
-		private Text newValue = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">PathReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> newKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> newValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			List<String> preList = new ArrayList<String>();
-			List<String> afterList = new ArrayList<String>();
-			for (Text val : values) {
-				if (val.toString() == null || val.toString().equals(""))
-					return;
-				// C b#A-C
-				// C w#C-E
-				// C w#C-B
-				String[] arr = val.toString().split("#");
-				if (arr[0].equals("b")) {
-					newKey.set(arr[0]);
-					newValue.set(arr[1]);
-					preList.add(arr[1]);
-					context.write(newKey, newValue);
-				} else {
-					afterList.add(arr[1]);
-				}
-			}
-			if (preList.size() > 0) {
-				// has the black color
-				//preList has the begin vertex, afterList doesn't
-				for (int i = 0; i < preList.size(); i++) {
-					for (int j = 0; afterList.size() > 0 && j < afterList.size(); j++) {
-						newKey.set("b");
-						// "A-C" and "C-E" link and delete one "C"
-						newValue.set(preList.get(i) + afterList.get(j).substring(afterList.get(j).indexOf("-")));
-						context.write(newKey, newValue);
-					}
-				}
-			} else {
-				// only has white color nodes
-				for (int j = 0; afterList.size() > 0 && j < afterList.size(); j++) {
-					newKey.set("w");
-					newValue.set(afterList.get(j));
-					context.write(newKey, newValue);
-				}
-			}
-			preList.clear();
-			afterList.clear();
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">List&lt;<span class="pl-smi">String</span>&gt;</span> preList <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">ArrayList&lt;<span class="pl-smi">String</span>&gt;</span>();
+            <span class="pl-k">List&lt;<span class="pl-smi">String</span>&gt;</span> afterList <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">ArrayList&lt;<span class="pl-smi">String</span>&gt;</span>();
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    <span class="pl-k">return</span>;
+                <span class="pl-c">// C b#A-C</span>
+                <span class="pl-c">// C w#C-E</span>
+                <span class="pl-c">// C w#C-B</span>
+                <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>);
+                <span class="pl-k">if</span> (arr[<span class="pl-c1">0</span>]<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>)) {
+                    newKey<span class="pl-k">.</span>set(arr[<span class="pl-c1">0</span>]);
+                    newValue<span class="pl-k">.</span>set(arr[<span class="pl-c1">1</span>]);
+                    preList<span class="pl-k">.</span>add(arr[<span class="pl-c1">1</span>]);
+                    context<span class="pl-k">.</span>write(newKey, newValue);
+                } <span class="pl-k">else</span> {
+                    afterList<span class="pl-k">.</span>add(arr[<span class="pl-c1">1</span>]);
+                }
+            }
+            <span class="pl-k">if</span> (preList<span class="pl-k">.</span>size() <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+                <span class="pl-c">// has the black color</span>
+                <span class="pl-c">//preList has the begin vertex, afterList doesn't</span>
+                <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> preList<span class="pl-k">.</span>size(); i<span class="pl-k">++</span>) {
+                    <span class="pl-k">for</span> (<span class="pl-k">int</span> j <span class="pl-k">=</span> <span class="pl-c1">0</span>; afterList<span class="pl-k">.</span>size() <span class="pl-k">&gt;</span> <span class="pl-c1">0</span> <span class="pl-k">&amp;&amp;</span> j <span class="pl-k">&lt;</span> afterList<span class="pl-k">.</span>size(); j<span class="pl-k">++</span>) {
+                        newKey<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>);
+                        <span class="pl-c">// "A-C" and "C-E" link and delete one "C"</span>
+                        newValue<span class="pl-k">.</span>set(preList<span class="pl-k">.</span>get(i) <span class="pl-k">+</span> afterList<span class="pl-k">.</span>get(j)<span class="pl-k">.</span>substring(afterList<span class="pl-k">.</span>get(j)<span class="pl-k">.</span>indexOf(<span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span>)));
+                        context<span class="pl-k">.</span>write(newKey, newValue);
+                    }
+                }
+            } <span class="pl-k">else</span> {
+                <span class="pl-c">// only has white color nodes</span>
+                <span class="pl-k">for</span> (<span class="pl-k">int</span> j <span class="pl-k">=</span> <span class="pl-c1">0</span>; afterList<span class="pl-k">.</span>size() <span class="pl-k">&gt;</span> <span class="pl-c1">0</span> <span class="pl-k">&amp;&amp;</span> j <span class="pl-k">&lt;</span> afterList<span class="pl-k">.</span>size(); j<span class="pl-k">++</span>) {
+                    newKey<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>);
+                    newValue<span class="pl-k">.</span>set(afterList<span class="pl-k">.</span>get(j));
+                    context<span class="pl-k">.</span>write(newKey, newValue);
+                }
+            }
+            preList<span class="pl-k">.</span>clear();
+            afterList<span class="pl-k">.</span>clear();
+        }
+    }
 
-	public static void main(String[] args) throws Exception {
-		
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+
+    }
 
 }
-
-```
+</pre></div>
 
 整理最短路径结果
 Result.java 
 
-```java
-package com.ideal.netcare;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal.netcare</span>;
 
-import java.io.IOException;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.IOException</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Mapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Reducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
 
-public class Result {
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Result</span> {
 
-	public static class ResultValueMapper extends Mapper<Object, Text, Text, Text> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">ResultValueMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			String[] arr = value.toString().split("\\s+");
-			if (arr.length < 2)
-				return;
-			mapKey.set(arr[0]);
-			mapValue.set(arr[1]);
-			context.write(mapKey, mapValue);
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (arr<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">2</span>)
+                <span class="pl-k">return</span>;
+            mapKey<span class="pl-k">.</span>set(arr[<span class="pl-c1">0</span>]);
+            mapValue<span class="pl-k">.</span>set(arr[<span class="pl-c1">1</span>]);
+            context<span class="pl-k">.</span>write(mapKey, mapValue);
+        }
+    }
 
-	public static class ResultValueReducer extends Reducer<Text, Text, Text, Text> {
-		private Text result = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">ResultValueReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			for (Text val : values) {
-				if (val.toString() == null || val.toString().equals(""))
-					return;
-				String res=val.toString().substring(0, val.toString().indexOf("#"));
-				result.set(res);
-				context.write(key, result);
-			}
-		}
-	}
-	
-	public static class ResultPathMapper extends Mapper<Object, Text, Text, Text> {
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    <span class="pl-k">return</span>;
+                <span class="pl-smi">String</span> res<span class="pl-k">=</span>val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>substring(<span class="pl-c1">0</span>, val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>indexOf(<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>));
+                result<span class="pl-k">.</span>set(res);
+                context<span class="pl-k">.</span>write(key, result);
+            }
+        }
+    }
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">ResultPathMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			String[] arr = value.toString().split("\\s+");
-			if (arr.length < 2)
-				return;
-			String keyarr=arr[1].substring(arr[1].lastIndexOf("-")+1);
-			mapKey.set(keyarr);
-			mapValue.set(arr[1]);
-			context.write(mapKey, mapValue);
-		}
-	}
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-	public static class ResultPathReducer extends Reducer<Text, Text, Text, Text> {
-		private Text result = new Text();
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (arr<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">2</span>)
+                <span class="pl-k">return</span>;
+            <span class="pl-smi">String</span> keyarr<span class="pl-k">=</span>arr[<span class="pl-c1">1</span>]<span class="pl-k">.</span>substring(arr[<span class="pl-c1">1</span>]<span class="pl-k">.</span>lastIndexOf(<span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span>)<span class="pl-k">+</span><span class="pl-c1">1</span>);
+            mapKey<span class="pl-k">.</span>set(keyarr);
+            mapValue<span class="pl-k">.</span>set(arr[<span class="pl-c1">1</span>]);
+            context<span class="pl-k">.</span>write(mapKey, mapValue);
+        }
+    }
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			for (Text val : values) {
-				if (val.toString() == null || val.toString().equals(""))
-					return;
-				result.set(val.toString());
-				context.write(key, result);
-			}
-		}
-	}
-	
-	public static class ResultMapper extends Mapper<Object, Text, Text, Text> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">ResultPathReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		private Text mapKey = new Text();
-		private Text mapValue = new Text();
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    <span class="pl-k">return</span>;
+                result<span class="pl-k">.</span>set(val<span class="pl-k">.</span>toString());
+                context<span class="pl-k">.</span>write(key, result);
+            }
+        }
+    }
 
-		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			if (value.toString() == null || value.toString().equals(""))
-				return;
-			String[] arr = value.toString().split("\\s+");
-			if (arr.length < 2)
-				return;
-			mapKey.set(arr[0]);
-			mapValue.set(arr[1]);
-			context.write(mapKey, mapValue);
-		}
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">ResultMapper</span> <span class="pl-k">extends</span> <span class="pl-e">Mapper&lt;<span class="pl-smi">Object</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
 
-	public static class ResultReducer extends Reducer<Text, Text, Text, Text> {
-		private Text result = new Text();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapKey <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> mapValue <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
 
-		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			String res="";
-			String path="";
-			String value="";
-			for (Text val : values) {
-				if (val.toString() == null || val.toString().equals(""))
-					return;
-				if(val.toString().contains("-"))
-					path=val.toString();
-				else
-					value=val.toString();
-			}
-			res=path+", "+value;
-			result.set(res);
-			context.write(key, result);
-		}
-	}
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">map</span>(<span class="pl-smi">Object</span> <span class="pl-v">key</span>, <span class="pl-smi">Text</span> <span class="pl-v">value</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-k">if</span> (value<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                <span class="pl-k">return</span>;
+            <span class="pl-k">String</span>[] arr <span class="pl-k">=</span> value<span class="pl-k">.</span>toString()<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>);
+            <span class="pl-k">if</span> (arr<span class="pl-k">.</span>length <span class="pl-k">&lt;</span> <span class="pl-c1">2</span>)
+                <span class="pl-k">return</span>;
+            mapKey<span class="pl-k">.</span>set(arr[<span class="pl-c1">0</span>]);
+            mapValue<span class="pl-k">.</span>set(arr[<span class="pl-c1">1</span>]);
+            context<span class="pl-k">.</span>write(mapKey, mapValue);
+        }
+    }
 
-	public static void main(String[] args) throws Exception {
-		
-	}
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">ResultReducer</span> <span class="pl-k">extends</span> <span class="pl-e">Reducer&lt;<span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>, <span class="pl-smi">Text</span>&gt;</span> {
+        <span class="pl-k">private</span> <span class="pl-smi">Text</span> result <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Text</span>();
+
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">reduce</span>(<span class="pl-smi">Text</span> <span class="pl-v">key</span>, <span class="pl-k">Iterable&lt;<span class="pl-smi">Text</span>&gt;</span> <span class="pl-v">values</span>, <span class="pl-smi">Context</span> <span class="pl-v">context</span>) <span class="pl-k">throws</span> <span class="pl-smi">IOException</span>, <span class="pl-smi">InterruptedException</span> {
+            <span class="pl-smi">String</span> res<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+            <span class="pl-smi">String</span> path<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+            <span class="pl-smi">String</span> value<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>;
+            <span class="pl-k">for</span> (<span class="pl-smi">Text</span> val <span class="pl-k">:</span> values) {
+                <span class="pl-k">if</span> (val<span class="pl-k">.</span>toString() <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">||</span> val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>))
+                    <span class="pl-k">return</span>;
+                <span class="pl-k">if</span>(val<span class="pl-k">.</span>toString()<span class="pl-k">.</span>contains(<span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span>))
+                    path<span class="pl-k">=</span>val<span class="pl-k">.</span>toString();
+                <span class="pl-k">else</span>
+                    value<span class="pl-k">=</span>val<span class="pl-k">.</span>toString();
+            }
+            res<span class="pl-k">=</span>path<span class="pl-k">+</span><span class="pl-s"><span class="pl-pds">"</span>, <span class="pl-pds">"</span></span><span class="pl-k">+</span>value;
+            result<span class="pl-k">.</span>set(res);
+            context<span class="pl-k">.</span>write(key, result);
+        }
+    }
+
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+
+    }
 
 }
-
-```
+</pre></div>
 
 总的调用main函数：
 AdjListAndDijkstraWithPath.java
 
-```java
-package com.ideal.netcare;
+<pre><span class="pl-k">package</span> <span class="pl-smi">com.ideal.netcare</span>;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.BufferedReader</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.InputStreamReader</span>;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.GenericOptionsParser;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.conf.Configuration</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.FileSystem</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.fs.Path</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.IntWritable</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.io.Text</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.Job</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span>;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.hadoop.util.GenericOptionsParser</span>;
 
-import com.ideal.netcare.AdjListWithPath.AdjListWithPathMapper;
-import com.ideal.netcare.AdjListWithPath.AdjListWithPathReducer;
-import com.ideal.netcare.DijkstraWithPath.DijkstraWithPathMapper;
-import com.ideal.netcare.DijkstraWithPath.DijkstraWithPathReducer;
-import com.ideal.netcare.DijkstraWithPath.MinDisSortWithPathMapper;
-import com.ideal.netcare.DijkstraWithPath.MinDisSortWithPathReducer;
-import com.ideal.netcare.PathResult.PathMapper;
-import com.ideal.netcare.PathResult.PathPreMapper;
-import com.ideal.netcare.PathResult.PathPreReducer;
-import com.ideal.netcare.PathResult.PathReducer;
-import com.ideal.netcare.Result.ResultMapper;
-import com.ideal.netcare.Result.ResultPathMapper;
-import com.ideal.netcare.Result.ResultPathReducer;
-import com.ideal.netcare.Result.ResultReducer;
-import com.ideal.netcare.Result.ResultValueMapper;
-import com.ideal.netcare.Result.ResultValueReducer;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.AdjListWithPath.AdjListWithPathMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.AdjListWithPath.AdjListWithPathReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.DijkstraWithPath.DijkstraWithPathMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.DijkstraWithPath.DijkstraWithPathReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.DijkstraWithPath.MinDisSortWithPathMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.DijkstraWithPath.MinDisSortWithPathReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.PathResult.PathMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.PathResult.PathPreMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.PathResult.PathPreReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.PathResult.PathReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.Result.ResultMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.Result.ResultPathMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.Result.ResultPathReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.Result.ResultReducer</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.Result.ResultValueMapper</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.ideal.netcare.Result.ResultValueReducer</span>;
 
-public class AdjListAndDijkstraWithPath {
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">AdjListAndDijkstraWithPath</span> {
 
-	public static void main(String[] args) throws Exception {
-		Configuration conf = new Configuration();
-		conf.set("mapred.jar", "Dijkstra.jar");
-		conf.set("startVertex", "A");
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+        <span class="pl-smi">Configuration</span> conf <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Configuration</span>();
+        conf<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>mapred.jar<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Dijkstra.jar<span class="pl-pds">"</span></span>);
+        conf<span class="pl-k">.</span>set(<span class="pl-s"><span class="pl-pds">"</span>startVertex<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>A<span class="pl-pds">"</span></span>);
 
-		// find the adjlist
-		String[] ars = new String[] { "/syf/adjlist-withpath/input", "/syf/adjlist-withpath/output" };
-		String[] otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("usage: adjList-withpath <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job0 = Job.getInstance(conf, "adjList-withpath");
-		job0.setJarByClass(AdjListWithPath.class);
-		job0.setMapperClass(AdjListWithPathMapper.class);
-		job0.setReducerClass(AdjListWithPathReducer.class);
-		job0.setOutputKeyClass(Text.class);
-		job0.setOutputValueClass(Text.class);
+        <span class="pl-c">// find the adjlist</span>
+        <span class="pl-k">String</span>[] ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/adjlist-withpath/input<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>/syf/adjlist-withpath/output<span class="pl-pds">"</span></span> };
+        <span class="pl-k">String</span>[] otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: adjList-withpath &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job0 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>adjList-withpath<span class="pl-pds">"</span></span>);
+        job0<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">AdjListWithPath</span><span class="pl-k">.</span>class);
+        job0<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">AdjListWithPathMapper</span><span class="pl-k">.</span>class);
+        job0<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">AdjListWithPathReducer</span><span class="pl-k">.</span>class);
+        job0<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job0<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-		for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job0, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job0, new Path(otherArgs[otherArgs.length - 1]));
-		job0.waitForCompletion(true);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job0, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job0, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job0<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-		// find the shortest distance
-		boolean isdone = false;
-		int num = 0;
-		while (!isdone) {
-			if (num == 0)
-				ars = new String[] { "/syf/adjlist-withpath/output", "/syf/dijkstra-withpath/output/output_dijkstra" + num };
-			else
-				ars = new String[] { "/syf/dijkstra-withpath/output/output_mindis" + (num - 1), "/syf/dijkstra-withpath/output/output_dijkstra" + num };
-			otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-			if (otherArgs.length != 2) {
-				System.err.println("usage: dijkstra" + num + " <in> [<in>...] <out> ");
-				System.exit(2);
-			}
-			Job job1 = Job.getInstance(conf, "dijkstra-withpath" + num);
-			job1.setJarByClass(Dijkstra.class);
-			job1.setMapperClass(DijkstraWithPathMapper.class);
-			job1.setReducerClass(DijkstraWithPathReducer.class);
-			job1.setOutputKeyClass(Text.class);
-			job1.setOutputValueClass(Text.class);
+        <span class="pl-c">// find the shortest distance</span>
+        <span class="pl-k">boolean</span> isdone <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+        <span class="pl-k">int</span> num <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+        <span class="pl-k">while</span> (<span class="pl-k">!</span>isdone) {
+            <span class="pl-k">if</span> (num <span class="pl-k">==</span> <span class="pl-c1">0</span>)
+                ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/adjlist-withpath/output<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_dijkstra<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num };
+            <span class="pl-k">else</span>
+                ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_mindis<span class="pl-pds">"</span></span> <span class="pl-k">+</span> (num <span class="pl-k">-</span> <span class="pl-c1">1</span>), <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_dijkstra<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num };
+            otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+            <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+                <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: dijkstra<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+                <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+            }
+            <span class="pl-smi">Job</span> job1 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>dijkstra-withpath<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num);
+            job1<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">Dijkstra</span><span class="pl-k">.</span>class);
+            job1<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">DijkstraWithPathMapper</span><span class="pl-k">.</span>class);
+            job1<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">DijkstraWithPathReducer</span><span class="pl-k">.</span>class);
+            job1<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+            job1<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-			for (int i = 0; i < otherArgs.length - 1; ++i) {
-				FileInputFormat.addInputPath(job1, new Path(otherArgs[i]));
-			}
-			FileOutputFormat.setOutputPath(job1, new Path(otherArgs[otherArgs.length - 1]));
-			job1.waitForCompletion(true);
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+                <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job1, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+            }
+            <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job1, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+            job1<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-			//
-			ars = new String[] { "/syf/dijkstra-withpath/output/output_dijkstra" + num, "/syf/dijkstra-withpath/output/output_mindis" + num };
-			otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-			if (otherArgs.length != 2) {
-				System.err.println("usage: mindis-withpath <in> [<in>...] <out> ");
-				System.exit(2);
-			}
-			Job job2 = Job.getInstance(conf, "mindis-withpath");
-			job2.setJarByClass(Dijkstra.class);
-			job2.setMapperClass(MinDisSortWithPathMapper.class);
-			job2.setReducerClass(MinDisSortWithPathReducer.class);
+            <span class="pl-c">//</span>
+            ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_dijkstra<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num, <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_mindis<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num };
+            otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+            <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+                <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: mindis-withpath &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+                <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+            }
+            <span class="pl-smi">Job</span> job2 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>mindis-withpath<span class="pl-pds">"</span></span>);
+            job2<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">Dijkstra</span><span class="pl-k">.</span>class);
+            job2<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">MinDisSortWithPathMapper</span><span class="pl-k">.</span>class);
+            job2<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">MinDisSortWithPathReducer</span><span class="pl-k">.</span>class);
 
-			job2.setMapOutputKeyClass(IntWritable.class);
-			job2.setMapOutputValueClass(Text.class);
-			job2.setOutputKeyClass(Text.class);
-			job2.setOutputValueClass(Text.class);
-			for (int i = 0; i < otherArgs.length - 1; ++i) {
-				FileInputFormat.addInputPath(job2, new Path(otherArgs[i]));
-			}
-			FileOutputFormat.setOutputPath(job2, new Path(otherArgs[otherArgs.length - 1]));
-			job2.waitForCompletion(true);
+            job2<span class="pl-k">.</span>setMapOutputKeyClass(<span class="pl-smi">IntWritable</span><span class="pl-k">.</span>class);
+            job2<span class="pl-k">.</span>setMapOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+            job2<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+            job2<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+                <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job2, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+            }
+            <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job2, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+            job2<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-			// check is end?
-			isdone = true;
-			Path file = new Path("/syf/dijkstra-withpath/output/output_mindis" + num + "/part-r-00000");
-			FileSystem fs = FileSystem.get(conf);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(file)));
+            <span class="pl-c">// check is end?</span>
+            isdone <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+            <span class="pl-smi">Path</span> file <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Path</span>(<span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_mindis<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>/part-r-00000<span class="pl-pds">"</span></span>);
+            <span class="pl-smi">FileSystem</span> fs <span class="pl-k">=</span> <span class="pl-smi">FileSystem</span><span class="pl-k">.</span>get(conf);
+            <span class="pl-smi">BufferedReader</span> br <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">BufferedReader</span>(<span class="pl-k">new</span> <span class="pl-smi">InputStreamReader</span>(fs<span class="pl-k">.</span>open(file)));
 
-			String line = br.readLine();
-			while (line != null) {
-				String color = line.substring(line.toString().lastIndexOf("#") + 1);
-				System.out.println(color);
-				if (color.equals("g")) {
-					isdone = false;
-					break;
-				}
-				line = br.readLine();
-			}
+            <span class="pl-smi">String</span> line <span class="pl-k">=</span> br<span class="pl-k">.</span>readLine();
+            <span class="pl-k">while</span> (line <span class="pl-k">!=</span> <span class="pl-c1">null</span>) {
+                <span class="pl-smi">String</span> color <span class="pl-k">=</span> line<span class="pl-k">.</span>substring(line<span class="pl-k">.</span>toString()<span class="pl-k">.</span>lastIndexOf(<span class="pl-s"><span class="pl-pds">"</span>#<span class="pl-pds">"</span></span>) <span class="pl-k">+</span> <span class="pl-c1">1</span>);
+                <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(color);
+                <span class="pl-k">if</span> (color<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>g<span class="pl-pds">"</span></span>)) {
+                    isdone <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+                    <span class="pl-k">break</span>;
+                }
+                line <span class="pl-k">=</span> br<span class="pl-k">.</span>readLine();
+            }
 
-			num++;
-		}
+            num<span class="pl-k">++</span>;
+        }
 
-		// style shortest distance result
-		ars = new String[] { "/syf/dijkstra-withpath/output/output_dijkstra" + (num - 1), "/syf/dijkstra-withpath/output/result_value" };
-		otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("usage: result_value-withpath <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job3 = Job.getInstance(conf, "result_value-withpath");
-		job3.setJarByClass(Result.class);
-		job3.setMapperClass(ResultValueMapper.class);
-		job3.setReducerClass(ResultValueReducer.class);
-		job3.setOutputKeyClass(Text.class);
-		job3.setOutputValueClass(Text.class);
+        <span class="pl-c">// style shortest distance result</span>
+        ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_dijkstra<span class="pl-pds">"</span></span> <span class="pl-k">+</span> (num <span class="pl-k">-</span> <span class="pl-c1">1</span>), <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/result_value<span class="pl-pds">"</span></span> };
+        otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: result_value-withpath &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job3 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>result_value-withpath<span class="pl-pds">"</span></span>);
+        job3<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">Result</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">ResultValueMapper</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">ResultValueReducer</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job3<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-		for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job3, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job3, new Path(otherArgs[otherArgs.length - 1]));
-		job3.waitForCompletion(true);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job3, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job3, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job3<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-		// first path job
-		ars = new String[] { "/syf/dijkstra-withpath/output/output_dijkstra" + (num - 1), "/syf/dijkstra-withpath/output/output_path0" };
-		otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("usage: path0 <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job4 = Job.getInstance(conf, "path0");
-		job4.setJarByClass(PathResult.class);
-		job4.setMapperClass(PathPreMapper.class);
-		job4.setReducerClass(PathPreReducer.class);
-		job4.setOutputKeyClass(Text.class);
-		job4.setOutputValueClass(Text.class);
+        <span class="pl-c">// first path job</span>
+        ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_dijkstra<span class="pl-pds">"</span></span> <span class="pl-k">+</span> (num <span class="pl-k">-</span> <span class="pl-c1">1</span>), <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_path0<span class="pl-pds">"</span></span> };
+        otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: path0 &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job4 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>path0<span class="pl-pds">"</span></span>);
+        job4<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">PathResult</span><span class="pl-k">.</span>class);
+        job4<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">PathPreMapper</span><span class="pl-k">.</span>class);
+        job4<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">PathPreReducer</span><span class="pl-k">.</span>class);
+        job4<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job4<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-		for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job4, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job4, new Path(otherArgs[otherArgs.length - 1]));
-		job4.waitForCompletion(true);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job4, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job4, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job4<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-		// other path jobs
-		boolean isdone1 = false;
-		int num1 = 1;
-		while (!isdone1) {
-			ars = new String[] { "/syf/dijkstra-withpath/output/output_path" + (num1 - 1), "/syf/dijkstra-withpath/output/output_path" + num1 };
-			otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-			if (otherArgs.length != 2) {
-				System.err.println("usage: path" + num1 + " <in> [<in>...] <out> ");
-				System.exit(2);
-			}
-			Job job5 = Job.getInstance(conf, "path" + num1);
-			job5.setJarByClass(PathResult.class);
-			job5.setMapperClass(PathMapper.class);
-			job5.setReducerClass(PathReducer.class);
-			job5.setOutputKeyClass(Text.class);
-			job5.setOutputValueClass(Text.class);
+        <span class="pl-c">// other path jobs</span>
+        <span class="pl-k">boolean</span> isdone1 <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+        <span class="pl-k">int</span> num1 <span class="pl-k">=</span> <span class="pl-c1">1</span>;
+        <span class="pl-k">while</span> (<span class="pl-k">!</span>isdone1) {
+            ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_path<span class="pl-pds">"</span></span> <span class="pl-k">+</span> (num1 <span class="pl-k">-</span> <span class="pl-c1">1</span>), <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_path<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num1 };
+            otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+            <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+                <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: path<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num1 <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+                <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+            }
+            <span class="pl-smi">Job</span> job5 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>path<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num1);
+            job5<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">PathResult</span><span class="pl-k">.</span>class);
+            job5<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">PathMapper</span><span class="pl-k">.</span>class);
+            job5<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">PathReducer</span><span class="pl-k">.</span>class);
+            job5<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+            job5<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-			for (int i = 0; i < otherArgs.length - 1; ++i) {
-				FileInputFormat.addInputPath(job5, new Path(otherArgs[i]));
-			}
-			FileOutputFormat.setOutputPath(job5, new Path(otherArgs[otherArgs.length - 1]));
-			job5.waitForCompletion(true);
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+                <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job5, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+            }
+            <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job5, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+            job5<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-			// check is end?
-			isdone1 = true;
-			Path file = new Path("/syf/dijkstra-withpath/output/output_path" + num1 + "/part-r-00000");
-			FileSystem fs = FileSystem.get(conf);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(file)));
+            <span class="pl-c">// check is end?</span>
+            isdone1 <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+            <span class="pl-smi">Path</span> file <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Path</span>(<span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_path<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num1 <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>/part-r-00000<span class="pl-pds">"</span></span>);
+            <span class="pl-smi">FileSystem</span> fs <span class="pl-k">=</span> <span class="pl-smi">FileSystem</span><span class="pl-k">.</span>get(conf);
+            <span class="pl-smi">BufferedReader</span> br <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">BufferedReader</span>(<span class="pl-k">new</span> <span class="pl-smi">InputStreamReader</span>(fs<span class="pl-k">.</span>open(file)));
 
-			String line = br.readLine();
-			while (line != null) {
-				String color = line.split("\\s+")[0];
-				System.out.println(color);
-				if (color.equals("w")) {
-					isdone1 = false;
-					break;
-				}
-				line = br.readLine();
-			}
+            <span class="pl-smi">String</span> line <span class="pl-k">=</span> br<span class="pl-k">.</span>readLine();
+            <span class="pl-k">while</span> (line <span class="pl-k">!=</span> <span class="pl-c1">null</span>) {
+                <span class="pl-smi">String</span> color <span class="pl-k">=</span> line<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>s+<span class="pl-pds">"</span></span>)[<span class="pl-c1">0</span>];
+                <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(color);
+                <span class="pl-k">if</span> (color<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>)) {
+                    isdone1 <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+                    <span class="pl-k">break</span>;
+                }
+                line <span class="pl-k">=</span> br<span class="pl-k">.</span>readLine();
+            }
 
-			num1++;
-		}
+            num1<span class="pl-k">++</span>;
+        }
 
-		// style the total result
-		ars = new String[] { "/syf/dijkstra-withpath/output/output_path" + (num1 - 1), "/syf/dijkstra-withpath/output/result_path" };
-		otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 2) {
-			System.err.println("usage: result_path-withpath <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job6 = Job.getInstance(conf, "result_path-withpath");
-		job6.setJarByClass(Result.class);
-		job6.setMapperClass(ResultPathMapper.class);
-		job6.setReducerClass(ResultPathReducer.class);
-		job6.setOutputKeyClass(Text.class);
-		job6.setOutputValueClass(Text.class);
+        <span class="pl-c">// style the total result</span>
+        ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/output_path<span class="pl-pds">"</span></span> <span class="pl-k">+</span> (num1 <span class="pl-k">-</span> <span class="pl-c1">1</span>), <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/result_path<span class="pl-pds">"</span></span> };
+        otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">2</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: result_path-withpath &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job6 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>result_path-withpath<span class="pl-pds">"</span></span>);
+        job6<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">Result</span><span class="pl-k">.</span>class);
+        job6<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">ResultPathMapper</span><span class="pl-k">.</span>class);
+        job6<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">ResultPathReducer</span><span class="pl-k">.</span>class);
+        job6<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job6<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-		for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job6, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job6, new Path(otherArgs[otherArgs.length - 1]));
-		job6.waitForCompletion(true);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job6, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job6, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job6<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-		//
-		ars = new String[] { "/syf/dijkstra-withpath/output/result_value", "/syf/dijkstra-withpath/output/result_path", "/syf/dijkstra-withpath/output/result" };
-		otherArgs = new GenericOptionsParser(conf, ars).getRemainingArgs();
-		if (otherArgs.length != 3) {
-			System.err.println("usage: result-withpath <in> [<in>...] <out> ");
-			System.exit(2);
-		}
-		Job job7 = Job.getInstance(conf, "result-withpath");
-		job7.setJarByClass(Result.class);
-		job7.setMapperClass(ResultMapper.class);
-		job7.setReducerClass(ResultReducer.class);
-		job7.setOutputKeyClass(Text.class);
-		job7.setOutputValueClass(Text.class);
+        <span class="pl-c">//</span>
+        ars <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">String</span>[] { <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/result_value<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/result_path<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>/syf/dijkstra-withpath/output/result<span class="pl-pds">"</span></span> };
+        otherArgs <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">GenericOptionsParser</span>(conf, ars)<span class="pl-k">.</span>getRemainingArgs();
+        <span class="pl-k">if</span> (otherArgs<span class="pl-k">.</span>length <span class="pl-k">!=</span> <span class="pl-c1">3</span>) {
+            <span class="pl-smi">System</span><span class="pl-k">.</span>err<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>usage: result-withpath &lt;in&gt; [&lt;in&gt;...] &lt;out&gt; <span class="pl-pds">"</span></span>);
+            <span class="pl-smi">System</span><span class="pl-k">.</span>exit(<span class="pl-c1">2</span>);
+        }
+        <span class="pl-smi">Job</span> job7 <span class="pl-k">=</span> <span class="pl-smi">Job</span><span class="pl-k">.</span>getInstance(conf, <span class="pl-s"><span class="pl-pds">"</span>result-withpath<span class="pl-pds">"</span></span>);
+        job7<span class="pl-k">.</span>setJarByClass(<span class="pl-smi">Result</span><span class="pl-k">.</span>class);
+        job7<span class="pl-k">.</span>setMapperClass(<span class="pl-smi">ResultMapper</span><span class="pl-k">.</span>class);
+        job7<span class="pl-k">.</span>setReducerClass(<span class="pl-smi">ResultReducer</span><span class="pl-k">.</span>class);
+        job7<span class="pl-k">.</span>setOutputKeyClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
+        job7<span class="pl-k">.</span>setOutputValueClass(<span class="pl-smi">Text</span><span class="pl-k">.</span>class);
 
-		for (int i = 0; i < otherArgs.length - 1; ++i) {
-			FileInputFormat.addInputPath(job7, new Path(otherArgs[i]));
-		}
-		FileOutputFormat.setOutputPath(job7, new Path(otherArgs[otherArgs.length - 1]));
-		job7.waitForCompletion(true);
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>; <span class="pl-k">++</span>i) {
+            <span class="pl-smi">FileInputFormat</span><span class="pl-k">.</span>addInputPath(job7, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[i]));
+        }
+        <span class="pl-smi">FileOutputFormat</span><span class="pl-k">.</span>setOutputPath(job7, <span class="pl-k">new</span> <span class="pl-smi">Path</span>(otherArgs[otherArgs<span class="pl-k">.</span>length <span class="pl-k">-</span> <span class="pl-c1">1</span>]));
+        job7<span class="pl-k">.</span>waitForCompletion(<span class="pl-c1">true</span>);
 
-	}
+    }
 
 }
-
-```
+</pre>
 
 最后，迭代计算并不适合用MapReduce框架来计算，因为读写HDFS过于频繁，效率低下。还是适合用专门的图计算框架，如spark的Graphx或者GraphLab等。
 
