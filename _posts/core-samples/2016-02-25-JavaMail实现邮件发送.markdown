@@ -1,6 +1,6 @@
 ---
 layout: post
-category : Hadoop
+category : Java
 tagline: 
 tags : [javamail, multi-thread]
 ---
@@ -17,373 +17,367 @@ tags : [javamail, multi-thread]
 邮件主要信息类
 TAlertMail.java
 
-```java
-package com.binarysoft.service.alertmail;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.binarysoft.service.alertmail</span>;
 
-import java.util.Date;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Date</span>;
 
-public class TAlertMail {
-    private Long l3Id;
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">TAlertMail</span> {
+    <span class="pl-k">private</span> <span class="pl-smi">Long</span> l3Id;
 
-    private Integer active;
+    <span class="pl-k">private</span> <span class="pl-smi">Integer</span> active;
 
-    private Date modifyTime;
+    <span class="pl-k">private</span> <span class="pl-smi">Date</span> modifyTime;
 
-    private Integer hasSend;
+    <span class="pl-k">private</span> <span class="pl-smi">Integer</span> hasSend;
 
-    private Long neId;
+    <span class="pl-k">private</span> <span class="pl-smi">Long</span> neId;
 
-    private String alertType;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> alertType;
 
-    public Long getL3Id() {
-        return l3Id;
+    <span class="pl-k">public</span> <span class="pl-smi">Long</span> <span class="pl-en">getL3Id</span>() {
+        <span class="pl-k">return</span> l3Id;
     }
 
-    public void setL3Id(Long l3Id) {
-        this.l3Id = l3Id;
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setL3Id</span>(<span class="pl-smi">Long</span> <span class="pl-v">l3Id</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>l3Id <span class="pl-k">=</span> l3Id;
     }
 
-    public Integer getActive() {
-        return active;
+    <span class="pl-k">public</span> <span class="pl-smi">Integer</span> <span class="pl-en">getActive</span>() {
+        <span class="pl-k">return</span> active;
     }
 
-    public void setActive(Integer active) {
-        this.active = active;
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setActive</span>(<span class="pl-smi">Integer</span> <span class="pl-v">active</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>active <span class="pl-k">=</span> active;
     }
 
-    public Date getModifyTime() {
-        return modifyTime;
+    <span class="pl-k">public</span> <span class="pl-smi">Date</span> <span class="pl-en">getModifyTime</span>() {
+        <span class="pl-k">return</span> modifyTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setModifyTime</span>(<span class="pl-smi">Date</span> <span class="pl-v">modifyTime</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>modifyTime <span class="pl-k">=</span> modifyTime;
     }
 
-    public Integer getHasSend() {
-        return hasSend;
+    <span class="pl-k">public</span> <span class="pl-smi">Integer</span> <span class="pl-en">getHasSend</span>() {
+        <span class="pl-k">return</span> hasSend;
     }
 
-    public void setHasSend(Integer hasSend) {
-        this.hasSend = hasSend;
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setHasSend</span>(<span class="pl-smi">Integer</span> <span class="pl-v">hasSend</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>hasSend <span class="pl-k">=</span> hasSend;
     }
 
-    public Long getNeId() {
-        return neId;
+    <span class="pl-k">public</span> <span class="pl-smi">Long</span> <span class="pl-en">getNeId</span>() {
+        <span class="pl-k">return</span> neId;
     }
 
-    public void setNeId(Long neId) {
-        this.neId = neId;
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setNeId</span>(<span class="pl-smi">Long</span> <span class="pl-v">neId</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>neId <span class="pl-k">=</span> neId;
     }
 
-    public String getAlertType() {
-        return alertType;
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getAlertType</span>() {
+        <span class="pl-k">return</span> alertType;
     }
 
-    public void setAlertType(String alertType) {
-        this.alertType = alertType == null ? null : alertType.trim();
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setAlertType</span>(<span class="pl-smi">String</span> <span class="pl-v">alertType</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>alertType <span class="pl-k">=</span> alertType <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">?</span> <span class="pl-c1">null</span> <span class="pl-k">:</span> alertType<span class="pl-k">.</span>trim();
     }
-}
-```
+}</pre></div>
 
 TAlertMailWithBLOBs.java
 
-```java
-package com.binarysoft.service.alertmail;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.binarysoft.service.alertmail</span>;
 
-public class TAlertMailWithBLOBs extends TAlertMail {
-    private String sendTo;
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">TAlertMailWithBLOBs</span> <span class="pl-k">extends</span> <span class="pl-e">TAlertMail</span> {
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> sendTo;
 
-    private String cc;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> cc;
 
-    private String mailTitle;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> mailTitle;
 
-    private String mailContent;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> mailContent;
 
-    private String attach;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> attach;
 
-    public String getSendTo() {
-        return sendTo;
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getSendTo</span>() {
+        <span class="pl-k">return</span> sendTo;
     }
 
-    public void setSendTo(String sendTo) {
-        this.sendTo = sendTo == null ? null : sendTo.trim();
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setSendTo</span>(<span class="pl-smi">String</span> <span class="pl-v">sendTo</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>sendTo <span class="pl-k">=</span> sendTo <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">?</span> <span class="pl-c1">null</span> <span class="pl-k">:</span> sendTo<span class="pl-k">.</span>trim();
     }
 
-    public String getCc() {
-        return cc;
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getCc</span>() {
+        <span class="pl-k">return</span> cc;
     }
 
-    public void setCc(String cc) {
-        this.cc = cc == null ? null : cc.trim();
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setCc</span>(<span class="pl-smi">String</span> <span class="pl-v">cc</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>cc <span class="pl-k">=</span> cc <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">?</span> <span class="pl-c1">null</span> <span class="pl-k">:</span> cc<span class="pl-k">.</span>trim();
     }
 
-    public String getMailTitle() {
-        return mailTitle;
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getMailTitle</span>() {
+        <span class="pl-k">return</span> mailTitle;
     }
 
-    public void setMailTitle(String mailTitle) {
-        this.mailTitle = mailTitle == null ? null : mailTitle.trim();
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setMailTitle</span>(<span class="pl-smi">String</span> <span class="pl-v">mailTitle</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>mailTitle <span class="pl-k">=</span> mailTitle <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">?</span> <span class="pl-c1">null</span> <span class="pl-k">:</span> mailTitle<span class="pl-k">.</span>trim();
     }
 
-    public String getMailContent() {
-        return mailContent;
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getMailContent</span>() {
+        <span class="pl-k">return</span> mailContent;
     }
 
-    public void setMailContent(String mailContent) {
-        this.mailContent = mailContent == null ? null : mailContent.trim();
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setMailContent</span>(<span class="pl-smi">String</span> <span class="pl-v">mailContent</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>mailContent <span class="pl-k">=</span> mailContent <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">?</span> <span class="pl-c1">null</span> <span class="pl-k">:</span> mailContent<span class="pl-k">.</span>trim();
     }
 
-    public String getAttach() {
-        return attach;
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">getAttach</span>() {
+        <span class="pl-k">return</span> attach;
     }
 
-    public void setAttach(String attach) {
-        this.attach = attach == null ? null : attach.trim();
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">setAttach</span>(<span class="pl-smi">String</span> <span class="pl-v">attach</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>attach <span class="pl-k">=</span> attach <span class="pl-k">==</span> <span class="pl-c1">null</span> <span class="pl-k">?</span> <span class="pl-c1">null</span> <span class="pl-k">:</span> attach<span class="pl-k">.</span>trim();
     }
-}
-```
+}</pre></div>
 
 邮件发送类
 SendMailServiceBean.java
 
-```java
-package com.binarysoft.service.sendmail;
+<div class="highlight highlight-source-java"><pre><span class="pl-k">package</span> <span class="pl-smi">com.binarysoft.service.sendmail</span>;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.ArrayList</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Collection</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Date</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.LinkedList</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.List</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.util.Properties</span>;
 
-import javax.mail.AuthenticationFailedException;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.AuthenticationFailedException</span>;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.Message</span>;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.MessagingException</span>;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.NoSuchProviderException</span>;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.Session</span>;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.Transport</span>;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.internet.InternetAddress</span>;
+<span class="pl-k">import</span> <span class="pl-smi">javax.mail.internet.MimeMessage</span>;
 
-import org.apache.commons.lang.StringUtils;
+<span class="pl-k">import</span> <span class="pl-smi">org.apache.commons.lang.StringUtils</span>;
 
-import com.binarysoft.service.alertmail.TAlertMailService;
-import com.binarysoft.service.alertmail.TAlertMailWithBLOBs;
-import common.framework.dsb.AbstractServiceBean;
-import common.framework.dsb.annotation.DSBLog;
-import common.framework.dsb.annotation.DSBService;
-import common.framework.dsb.client.DefaultServiceFactory;
-import common.framework.dsb.client.ServiceFactory;
-import common.framework.dsb.service.ServiceContext;
-import common.framework.log.Logger;
+<span class="pl-k">import</span> <span class="pl-smi">com.binarysoft.service.alertmail.TAlertMailService</span>;
+<span class="pl-k">import</span> <span class="pl-smi">com.binarysoft.service.alertmail.TAlertMailWithBLOBs</span>;
+<span class="pl-k">import</span> <span class="pl-smi">common.framework.dsb.AbstractServiceBean</span>;
+<span class="pl-k">import</span> <span class="pl-smi">common.framework.dsb.annotation.DSBLog</span>;
+<span class="pl-k">import</span> <span class="pl-smi">common.framework.dsb.annotation.DSBService</span>;
+<span class="pl-k">import</span> <span class="pl-smi">common.framework.dsb.client.DefaultServiceFactory</span>;
+<span class="pl-k">import</span> <span class="pl-smi">common.framework.dsb.client.ServiceFactory</span>;
+<span class="pl-k">import</span> <span class="pl-smi">common.framework.dsb.service.ServiceContext</span>;
+<span class="pl-k">import</span> <span class="pl-smi">common.framework.log.Logger</span>;
 
-public class SendMailServiceBean implements SendMailService {
-	private LinkedList<TAlertMailWithBLOBs> mailInfoList = new LinkedList<TAlertMailWithBLOBs>();
-	private String mailHost;
-	private String port;
-	private String fromMail;
-	private String password;
-	private String timeout;
-	private int sendTotal = 0;
-	private static final Integer IS_ACTIVE = 1;
-	private boolean isActive = true;
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">SendMailServiceBean</span> <span class="pl-k">implements</span> <span class="pl-e">SendMailService</span> {
+    <span class="pl-k">private</span> <span class="pl-k">LinkedList&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span> mailInfoList <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">LinkedList&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span>();
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> mailHost;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> port;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> fromMail;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> password;
+    <span class="pl-k">private</span> <span class="pl-smi">String</span> timeout;
+    <span class="pl-k">private</span> <span class="pl-k">int</span> sendTotal <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-k">final</span> <span class="pl-smi">Integer</span> <span class="pl-c1">IS_ACTIVE</span> <span class="pl-k">=</span> <span class="pl-c1">1</span>;
+    <span class="pl-k">private</span> <span class="pl-k">boolean</span> isActive <span class="pl-k">=</span> <span class="pl-c1">true</span>;
 
-	@Override
-	public void start(ServiceContext serviceContext) throws Exception {
-		super.start(serviceContext);
-		serviceContext.loadConfigProperties("sendmail.properties");
-		int workerNum = Integer.parseInt(serviceContext.getProperty("worker"));
-		mailHost = serviceContext.getProperty("host");
-		port = serviceContext.getProperty("port");
-		fromMail = serviceContext.getProperty("from");
-		password = serviceContext.getProperty("password");
-		timeout = serviceContext.getProperty("timeout");
-		if (workerNum < 3)
-			workerNum = 3;
-		for (int i = 0; i < workerNum; i++) {
-			new Sender(i + 1).start();
-		}
-	}
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">start</span>(<span class="pl-smi">ServiceContext</span> <span class="pl-v">serviceContext</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+        <span class="pl-v">super</span><span class="pl-k">.</span>start(serviceContext);
+        serviceContext<span class="pl-k">.</span>loadConfigProperties(<span class="pl-s"><span class="pl-pds">"</span>sendmail.properties<span class="pl-pds">"</span></span>);
+        <span class="pl-k">int</span> workerNum <span class="pl-k">=</span> <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(serviceContext<span class="pl-k">.</span>getProperty(<span class="pl-s"><span class="pl-pds">"</span>worker<span class="pl-pds">"</span></span>));
+        mailHost <span class="pl-k">=</span> serviceContext<span class="pl-k">.</span>getProperty(<span class="pl-s"><span class="pl-pds">"</span>host<span class="pl-pds">"</span></span>);
+        port <span class="pl-k">=</span> serviceContext<span class="pl-k">.</span>getProperty(<span class="pl-s"><span class="pl-pds">"</span>port<span class="pl-pds">"</span></span>);
+        fromMail <span class="pl-k">=</span> serviceContext<span class="pl-k">.</span>getProperty(<span class="pl-s"><span class="pl-pds">"</span>from<span class="pl-pds">"</span></span>);
+        password <span class="pl-k">=</span> serviceContext<span class="pl-k">.</span>getProperty(<span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>);
+        timeout <span class="pl-k">=</span> serviceContext<span class="pl-k">.</span>getProperty(<span class="pl-s"><span class="pl-pds">"</span>timeout<span class="pl-pds">"</span></span>);
+        <span class="pl-k">if</span> (workerNum <span class="pl-k">&lt;</span> <span class="pl-c1">3</span>)
+            workerNum <span class="pl-k">=</span> <span class="pl-c1">3</span>;
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> workerNum; i<span class="pl-k">++</span>) {
+            <span class="pl-k">new</span> <span class="pl-smi">Sender</span>(i <span class="pl-k">+</span> <span class="pl-c1">1</span>)<span class="pl-k">.</span>start();
+        }
+    }
 
-	@Override
-	public void refresh() throws Exception {
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">refresh</span>() <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
 
-	}
+    }
 
-	@Override
-	public void close() throws Exception {
-		this.isActive = false;
-		this.sendTotal = 0;
-		this.mailInfoList.clear();
-	}
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">close</span>() <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+        <span class="pl-v">this</span><span class="pl-k">.</span>isActive <span class="pl-k">=</span> <span class="pl-c1">false</span>;
+        <span class="pl-v">this</span><span class="pl-k">.</span>sendTotal <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+        <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>clear();
+    }
 
-	@Override
-	public int addAllMailList() throws Exception {
-		List<TAlertMailWithBLOBs> list = new ArrayList<TAlertMailWithBLOBs>();
-		ServiceFactory serviceFactory = new DefaultServiceFactory();
-		TAlertMailService alertMailService = (TAlertMailService) serviceFactory.lookup("TAlertMailService");
-		Collection<TAlertMailWithBLOBs> mails = alertMailService.getAllAlertMail();
-		for (TAlertMailWithBLOBs alertMailWithBLOBs : mails) {
-			if (alertMailWithBLOBs.getActive() == IS_ACTIVE) {
-				list.add(alertMailWithBLOBs);
-			}
-		}
-		// 加入待发送队列
-		synchronized (this.mailInfoList) {
-			this.mailInfoList.addAll(list);
-			this.mailInfoList.notifyAll();
-		}
-		return list.size();
-	}
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">addAllMailList</span>() <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+        <span class="pl-k">List&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span> list <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">ArrayList&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span>();
+        <span class="pl-smi">ServiceFactory</span> serviceFactory <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">DefaultServiceFactory</span>();
+        <span class="pl-smi">TAlertMailService</span> alertMailService <span class="pl-k">=</span> (<span class="pl-smi">TAlertMailService</span>) serviceFactory<span class="pl-k">.</span>lookup(<span class="pl-s"><span class="pl-pds">"</span>TAlertMailService<span class="pl-pds">"</span></span>);
+        <span class="pl-k">Collection&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span> mails <span class="pl-k">=</span> alertMailService<span class="pl-k">.</span>getAllAlertMail();
+        <span class="pl-k">for</span> (<span class="pl-smi">TAlertMailWithBLOBs</span> alertMailWithBLOBs <span class="pl-k">:</span> mails) {
+            <span class="pl-k">if</span> (alertMailWithBLOBs<span class="pl-k">.</span>getActive() <span class="pl-k">==</span> <span class="pl-c1">IS_ACTIVE</span>) {
+                list<span class="pl-k">.</span>add(alertMailWithBLOBs);
+            }
+        }
+        <span class="pl-c">// 加入待发送队列</span>
+        <span class="pl-k">synchronized</span> (<span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList) {
+            <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>addAll(list);
+            <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>notifyAll();
+        }
+        <span class="pl-k">return</span> list<span class="pl-k">.</span>size();
+    }
 
-	@Override
-	public int addMail(TAlertMailWithBLOBs alertMailWithBLOBs) throws Exception {
-		if (alertMailWithBLOBs.getActive() == IS_ACTIVE && alertMailWithBLOBs.getSendTo() != null && !alertMailWithBLOBs.getSendTo().equals("")) {
-			// 加入待发送队列
-			synchronized (this.mailInfoList) {
-				this.mailInfoList.add(alertMailWithBLOBs);
-				this.mailInfoList.notifyAll();
-			}
-			return 1;
-		} else {
-			return 0;
-		}
-	}
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">addMail</span>(<span class="pl-smi">TAlertMailWithBLOBs</span> <span class="pl-v">alertMailWithBLOBs</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+        <span class="pl-k">if</span> (alertMailWithBLOBs<span class="pl-k">.</span>getActive() <span class="pl-k">==</span> <span class="pl-c1">IS_ACTIVE</span> <span class="pl-k">&amp;&amp;</span> alertMailWithBLOBs<span class="pl-k">.</span>getSendTo() <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>alertMailWithBLOBs<span class="pl-k">.</span>getSendTo()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>)) {
+            <span class="pl-c">// 加入待发送队列</span>
+            <span class="pl-k">synchronized</span> (<span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList) {
+                <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>add(alertMailWithBLOBs);
+                <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>notifyAll();
+            }
+            <span class="pl-k">return</span> <span class="pl-c1">1</span>;
+        } <span class="pl-k">else</span> {
+            <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+        }
+    }
 
-	@Override
-	public int addMailCollection(Collection<TAlertMailWithBLOBs> mailCollection) throws Exception {
-		List<TAlertMailWithBLOBs> list = new ArrayList<TAlertMailWithBLOBs>();
-		for (TAlertMailWithBLOBs alertMailWithBLOBs : mailCollection) {
-			if (alertMailWithBLOBs.getActive() == IS_ACTIVE && alertMailWithBLOBs.getSendTo() != null && !alertMailWithBLOBs.getSendTo().equals("")) {
-				list.add(alertMailWithBLOBs);
-			}
-		}
-		// 加入待发送队列
-		synchronized (this.mailInfoList) {
-			this.mailInfoList.addAll(list);
-			this.mailInfoList.notifyAll();
-		}
-		return list.size();
-	}
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">addMailCollection</span>(<span class="pl-k">Collection&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span> <span class="pl-v">mailCollection</span>) <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+        <span class="pl-k">List&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span> list <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">ArrayList&lt;<span class="pl-smi">TAlertMailWithBLOBs</span>&gt;</span>();
+        <span class="pl-k">for</span> (<span class="pl-smi">TAlertMailWithBLOBs</span> alertMailWithBLOBs <span class="pl-k">:</span> mailCollection) {
+            <span class="pl-k">if</span> (alertMailWithBLOBs<span class="pl-k">.</span>getActive() <span class="pl-k">==</span> <span class="pl-c1">IS_ACTIVE</span> <span class="pl-k">&amp;&amp;</span> alertMailWithBLOBs<span class="pl-k">.</span>getSendTo() <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>alertMailWithBLOBs<span class="pl-k">.</span>getSendTo()<span class="pl-k">.</span>equals(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>)) {
+                list<span class="pl-k">.</span>add(alertMailWithBLOBs);
+            }
+        }
+        <span class="pl-c">// 加入待发送队列</span>
+        <span class="pl-k">synchronized</span> (<span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList) {
+            <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>addAll(list);
+            <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>notifyAll();
+        }
+        <span class="pl-k">return</span> list<span class="pl-k">.</span>size();
+    }
 
-	private class Sender extends Thread {
-		// 线程编号，从1开始
-		private int num;
+    <span class="pl-k">private</span> <span class="pl-k">class</span> <span class="pl-en">Sender</span> <span class="pl-k">extends</span> <span class="pl-e">Thread</span> {
+        <span class="pl-c">// 线程编号，从1开始</span>
+        <span class="pl-k">private</span> <span class="pl-k">int</span> num;
 
-		public Sender(int i) {
-			this.num = i;
-		}
+        <span class="pl-k">public</span> <span class="pl-en">Sender</span>(<span class="pl-k">int</span> <span class="pl-v">i</span>) {
+            <span class="pl-v">this</span><span class="pl-k">.</span>num <span class="pl-k">=</span> i;
+        }
 
-		@Override
-		public void run() {
-			Logger.log(Logger.FATAL_LEVEL, "send thread " + num + " is running.");
-			try {
-				ServiceFactory serviceFactory = new DefaultServiceFactory();
-				TAlertMailService alertMailService = (TAlertMailService) serviceFactory.lookup("DSB/TAlertMailService");
-				while (isActive) {
-					TAlertMailWithBLOBs mailInfo = null;
-					synchronized (mailInfoList) {
-						// 还有邮件要发，取队列中的第一封
-						if (mailInfoList.size() > 0) {
-							mailInfo = mailInfoList.removeFirst();
-						} else {
-							Logger.log(Logger.FATAL_LEVEL, "thread" + num + " is waiting for an email.");
-							mailInfoList.wait();
-						}
-					}// 同步方法结束
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">run</span>() {
+            <span class="pl-smi">Logger</span><span class="pl-k">.</span>log(<span class="pl-smi">Logger</span><span class="pl-c1"><span class="pl-k">.</span>FATAL_LEVEL</span>, <span class="pl-s"><span class="pl-pds">"</span>send thread <span class="pl-pds">"</span></span> <span class="pl-k">+</span> num <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> is running.<span class="pl-pds">"</span></span>);
+            <span class="pl-k">try</span> {
+                <span class="pl-smi">ServiceFactory</span> serviceFactory <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">DefaultServiceFactory</span>();
+                <span class="pl-smi">TAlertMailService</span> alertMailService <span class="pl-k">=</span> (<span class="pl-smi">TAlertMailService</span>) serviceFactory<span class="pl-k">.</span>lookup(<span class="pl-s"><span class="pl-pds">"</span>DSB/TAlertMailService<span class="pl-pds">"</span></span>);
+                <span class="pl-k">while</span> (isActive) {
+                    <span class="pl-smi">TAlertMailWithBLOBs</span> mailInfo <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+                    <span class="pl-k">synchronized</span> (mailInfoList) {
+                        <span class="pl-c">// 还有邮件要发，取队列中的第一封</span>
+                        <span class="pl-k">if</span> (mailInfoList<span class="pl-k">.</span>size() <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+                            mailInfo <span class="pl-k">=</span> mailInfoList<span class="pl-k">.</span>removeFirst();
+                        } <span class="pl-k">else</span> {
+                            <span class="pl-smi">Logger</span><span class="pl-k">.</span>log(<span class="pl-smi">Logger</span><span class="pl-c1"><span class="pl-k">.</span>FATAL_LEVEL</span>, <span class="pl-s"><span class="pl-pds">"</span>thread<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> is waiting for an email.<span class="pl-pds">"</span></span>);
+                            mailInfoList<span class="pl-k">.</span>wait();
+                        }
+                    }<span class="pl-c">// 同步方法结束</span>
 
-					// 发送邮件
-					if (mailInfo != null) {
-						try {
-							Properties props = new Properties();
-							props.put("mail.smtp.starttls.enable","true");
-							props.put("mail.smtp.auth", "true");
-							props.put("mail.smtp.timeout", timeout);
-							props.put("mail.smtp.connectiontimeout", timeout);
+                    <span class="pl-c">// 发送邮件</span>
+                    <span class="pl-k">if</span> (mailInfo <span class="pl-k">!=</span> <span class="pl-c1">null</span>) {
+                        <span class="pl-k">try</span> {
+                            <span class="pl-smi">Properties</span> props <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Properties</span>();
+                            props<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>mail.smtp.starttls.enable<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>);
+                            props<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>mail.smtp.auth<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span>);
+                            props<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>mail.smtp.timeout<span class="pl-pds">"</span></span>, timeout);
+                            props<span class="pl-k">.</span>put(<span class="pl-s"><span class="pl-pds">"</span>mail.smtp.connectiontimeout<span class="pl-pds">"</span></span>, timeout);
 
-							Session session = Session.getInstance(props);
-							//session.setDebug(true);
+                            <span class="pl-smi">Session</span> session <span class="pl-k">=</span> <span class="pl-smi">Session</span><span class="pl-k">.</span>getInstance(props);
+                            <span class="pl-c">//session.setDebug(true);</span>
 
-							// 发送邮件
-							Transport transport = session.getTransport("smtp");
+                            <span class="pl-c">// 发送邮件</span>
+                            <span class="pl-smi">Transport</span> transport <span class="pl-k">=</span> session<span class="pl-k">.</span>getTransport(<span class="pl-s"><span class="pl-pds">"</span>smtp<span class="pl-pds">"</span></span>);
 
-							transport.connect(mailHost, Integer.parseInt(port), fromMail, password);
-							// 生成邮件内容
-							MimeMessage message = getMailContent(session, fromMail, mailInfo.getSendTo(), mailInfo.getCc(), mailInfo.getMailTitle(), mailInfo.getMailContent());
-							transport.sendMessage(message, message.getAllRecipients());
-							// 标记为已发送，时间为发送时间
-							mailInfo.setHasSend(1);
-							mailInfo.setModifyTime(new Date());
-							alertMailService.updateByPrimaryKey(mailInfo);
-							sendTotal++;
-							System.out.println("sender" + num + " send an email success!");
-							transport.close();
-						} catch (NoSuchProviderException ex) {
-							System.out.println(ex);
-						} catch (AuthenticationFailedException ex) {
-							System.out.println(ex);
-						} catch (MessagingException ex) {
-							System.out.println(ex);
-						}
-						
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+                            transport<span class="pl-k">.</span>connect(mailHost, <span class="pl-smi">Integer</span><span class="pl-k">.</span>parseInt(port), fromMail, password);
+                            <span class="pl-c">// 生成邮件内容</span>
+                            <span class="pl-smi">MimeMessage</span> message <span class="pl-k">=</span> getMailContent(session, fromMail, mailInfo<span class="pl-k">.</span>getSendTo(), mailInfo<span class="pl-k">.</span>getCc(), mailInfo<span class="pl-k">.</span>getMailTitle(), mailInfo<span class="pl-k">.</span>getMailContent());
+                            transport<span class="pl-k">.</span>sendMessage(message, message<span class="pl-k">.</span>getAllRecipients());
+                            <span class="pl-c">// 标记为已发送，时间为发送时间</span>
+                            mailInfo<span class="pl-k">.</span>setHasSend(<span class="pl-c1">1</span>);
+                            mailInfo<span class="pl-k">.</span>setModifyTime(<span class="pl-k">new</span> <span class="pl-smi">Date</span>());
+                            alertMailService<span class="pl-k">.</span>updateByPrimaryKey(mailInfo);
+                            sendTotal<span class="pl-k">++</span>;
+                            <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>sender<span class="pl-pds">"</span></span> <span class="pl-k">+</span> num <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> send an email success!<span class="pl-pds">"</span></span>);
+                            transport<span class="pl-k">.</span>close();
+                        } <span class="pl-k">catch</span> (<span class="pl-smi">NoSuchProviderException</span> ex) {
+                            <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(ex);
+                        } <span class="pl-k">catch</span> (<span class="pl-smi">AuthenticationFailedException</span> ex) {
+                            <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(ex);
+                        } <span class="pl-k">catch</span> (<span class="pl-smi">MessagingException</span> ex) {
+                            <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(ex);
+                        }
 
-	}
+                    }
+                }
+            } <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> e) {
+                e<span class="pl-k">.</span>printStackTrace();
+            }
+        }
 
-	private static MimeMessage getMailContent(Session session, String fromMail, String toMailStr, String ccStr, String mailTitle, String mailContent) throws MessagingException {
-		// 由邮件会话新建一个消息对象
-		MimeMessage message = new MimeMessage(session);
-		// 设置发件人的地址
-		message.setFrom(new InternetAddress(fromMail));
-		// 设置收件人,并设置其接收类型为TO
-		String[] toMail = null;
-		String[] cC = null;
-		if (StringUtils.isNotBlank(toMailStr))
-			toMail = toMailStr.split(";|；");
-		if (StringUtils.isNotBlank(ccStr))
-			cC = ccStr.split(";|；");
-		if (toMail != null && toMail.length > 0) {
-			for (int i = 0; i < toMail.length; i++)
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress(toMail[i]));
-		}
-		// 设置抄送人,并设置其接收类型为cc
-		if (cC != null && cC.length > 0) {
-			for (int i = 0; cC != null && i < cC.length; i++)
-				message.addRecipient(Message.RecipientType.CC, new InternetAddress(cC[i]));
-		}
-		// 设置标题
-		message.setSubject(mailTitle);
-		// 设置信件内容
-		// 发送HTML邮件
-		message.setContent(mailContent, "text/html;charset=gbk");
-		// 设置发信时间
-		message.setSentDate(new Date());
-		// 存储邮件信息
-		message.saveChanges();
-		return message;
-	}
+    }
 
-	@Override
-	public int getHasSendMailNum() {
-		return this.sendTotal;
-	}
+    <span class="pl-k">private</span> <span class="pl-k">static</span> <span class="pl-smi">MimeMessage</span> <span class="pl-en">getMailContent</span>(<span class="pl-smi">Session</span> <span class="pl-v">session</span>, <span class="pl-smi">String</span> <span class="pl-v">fromMail</span>, <span class="pl-smi">String</span> <span class="pl-v">toMailStr</span>, <span class="pl-smi">String</span> <span class="pl-v">ccStr</span>, <span class="pl-smi">String</span> <span class="pl-v">mailTitle</span>, <span class="pl-smi">String</span> <span class="pl-v">mailContent</span>) <span class="pl-k">throws</span> <span class="pl-smi">MessagingException</span> {
+        <span class="pl-c">// 由邮件会话新建一个消息对象</span>
+        <span class="pl-smi">MimeMessage</span> message <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">MimeMessage</span>(session);
+        <span class="pl-c">// 设置发件人的地址</span>
+        message<span class="pl-k">.</span>setFrom(<span class="pl-k">new</span> <span class="pl-smi">InternetAddress</span>(fromMail));
+        <span class="pl-c">// 设置收件人,并设置其接收类型为TO</span>
+        <span class="pl-k">String</span>[] toMail <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+        <span class="pl-k">String</span>[] cC <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+        <span class="pl-k">if</span> (<span class="pl-smi">StringUtils</span><span class="pl-k">.</span>isNotBlank(toMailStr))
+            toMail <span class="pl-k">=</span> toMailStr<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>;|；<span class="pl-pds">"</span></span>);
+        <span class="pl-k">if</span> (<span class="pl-smi">StringUtils</span><span class="pl-k">.</span>isNotBlank(ccStr))
+            cC <span class="pl-k">=</span> ccStr<span class="pl-k">.</span>split(<span class="pl-s"><span class="pl-pds">"</span>;|；<span class="pl-pds">"</span></span>);
+        <span class="pl-k">if</span> (toMail <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> toMail<span class="pl-k">.</span>length <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; i <span class="pl-k">&lt;</span> toMail<span class="pl-k">.</span>length; i<span class="pl-k">++</span>)
+                message<span class="pl-k">.</span>addRecipient(<span class="pl-smi">Message</span><span class="pl-k">.</span><span class="pl-smi">RecipientType</span><span class="pl-c1"><span class="pl-k">.</span>TO</span>, <span class="pl-k">new</span> <span class="pl-smi">InternetAddress</span>(toMail[i]));
+        }
+        <span class="pl-c">// 设置抄送人,并设置其接收类型为cc</span>
+        <span class="pl-k">if</span> (cC <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> cC<span class="pl-k">.</span>length <span class="pl-k">&gt;</span> <span class="pl-c1">0</span>) {
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>; cC <span class="pl-k">!=</span> <span class="pl-c1">null</span> <span class="pl-k">&amp;&amp;</span> i <span class="pl-k">&lt;</span> cC<span class="pl-k">.</span>length; i<span class="pl-k">++</span>)
+                message<span class="pl-k">.</span>addRecipient(<span class="pl-smi">Message</span><span class="pl-k">.</span><span class="pl-smi">RecipientType</span><span class="pl-c1"><span class="pl-k">.</span>CC</span>, <span class="pl-k">new</span> <span class="pl-smi">InternetAddress</span>(cC[i]));
+        }
+        <span class="pl-c">// 设置标题</span>
+        message<span class="pl-k">.</span>setSubject(mailTitle);
+        <span class="pl-c">// 设置信件内容</span>
+        <span class="pl-c">// 发送HTML邮件</span>
+        message<span class="pl-k">.</span>setContent(mailContent, <span class="pl-s"><span class="pl-pds">"</span>text/html;charset=gbk<span class="pl-pds">"</span></span>);
+        <span class="pl-c">// 设置发信时间</span>
+        message<span class="pl-k">.</span>setSentDate(<span class="pl-k">new</span> <span class="pl-smi">Date</span>());
+        <span class="pl-c">// 存储邮件信息</span>
+        message<span class="pl-k">.</span>saveChanges();
+        <span class="pl-k">return</span> message;
+    }
 
-	@Override
-	public int getLeftMailNum() {
-		return this.mailInfoList.size();
-	}
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getHasSendMailNum</span>() {
+        <span class="pl-k">return</span> <span class="pl-v">this</span><span class="pl-k">.</span>sendTotal;
+    }
 
-	@Override
-	public void clearMailQueue() {
-		this.sendTotal = 0;
-		this.mailInfoList.clear();
-	}
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-en">getLeftMailNum</span>() {
+        <span class="pl-k">return</span> <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>size();
+    }
+
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">clearMailQueue</span>() {
+        <span class="pl-v">this</span><span class="pl-k">.</span>sendTotal <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+        <span class="pl-v">this</span><span class="pl-k">.</span>mailInfoList<span class="pl-k">.</span>clear();
+    }
 
 }
-
-```
+</pre></div>
