@@ -12,7 +12,7 @@ title : JonathonFly's Blog
 tagline: Site Tagline
 author :
   name : Yunfei Sun
-  email : 1204034391@qq.com
+  email : sunyunfei12040@163.com
   github : JonathonFly
   twitter : username
   feedburner : feedname
@@ -65,6 +65,7 @@ JB :
   #   /assets
   #
   ASSET_PATH : false
+  THEME-NAME : bootstrap-3
 
   # These paths are to the main pages Jekyll-Bootstrap ships with.
   # Some JB helpers refer to these paths; change them here if needed.
