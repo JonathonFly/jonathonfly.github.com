@@ -64,7 +64,7 @@ JB :
   #   http://s3.amazonaws.com/yoursite/themes/watermelon
   #   /assets
   #
-  ASSET_PATH : http://jonathonfly.github.io/assets/themes/bootstrap-3
+  ASSET_PATH : http://jonathonfly.github.io/assets/themes/twitter
  
 
   # These paths are to the main pages Jekyll-Bootstrap ships with.
