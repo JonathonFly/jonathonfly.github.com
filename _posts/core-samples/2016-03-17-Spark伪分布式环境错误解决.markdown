@@ -1,0 +1,28 @@
+---
+layout: post
+category : Spark
+tagline: 
+tags : [environment, pseudo-distributed]
+---
+{% include JB/setup %}
+
+##问题描述
+
+为了方便测试研究，我利用VMware搭建了一个虚拟机CentOS 7。为了防止笔记本卡哭，所以只搭建了一个伪分布式环境，包括Hadoop、Habse、Spark等。在搭建完成Spark之后，打包运行Jar文件遇到了一个问题，描述如下：
+
+    "WARN TaskSchedulerImpl: Initial job has not accepted any resources; check your cluster UI to ensure that workers are registered and have sufficient memory" 
+    
+##问题分析
+
+其实根据警告提示，可以看出workers的内存可能不足或者没有注册。然后到http://master:8080/（即spark UI页面）中，发现每个Application的Memory per Node大小为1024.0 MB，而我配置的每个Worker的Memory只有512.0 MB。因此，一个worker的所有内存不足以支撑一个Application的运行，所以，告警了。
+
+##问题解决
+
+将SPARK_HOME/conf/spark-env.sh中配置的SPARK_WORKER_MEMORY参数配置为1G，即每个Worker的内存改到1G即可。或者在写的代码中，设置spark.executor.memory参数的值，将其设置为512M，这个参数是改变每个Application的Memory per Node的值。
+只要Memory per Node的值小于每个Worker的Memory就可以顺畅运行了。
+
+```java
+sparkConf.set("spark.executor.memory", "512m");
+```
+
+OK，解决，现在可以愉快地玩耍了，破费。
