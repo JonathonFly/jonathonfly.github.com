@@ -395,6 +395,19 @@ public class Dijkstra {
 
 ```
 
+输入：(A#B#10)表示从A指向B的路径长度为10
+
+    A#B#10
+    A#C#5
+    B#C#2
+    B#D#1
+    C#B#3
+    C#D#9
+    C#E#2
+    D#E#4
+    E#A#7
+    E#D#6
+
 计算结果：
 
 <a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-03-24/1.png" target="_blank">    
