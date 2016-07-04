@@ -23,7 +23,8 @@ tags : [dijkstra, graphx, scala]
     E#A#7
     E#D#6
     
-<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/3.png" target="_blank">    
+<a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/3.png" target="_blank"> 
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/3.png" style="max-width:100%;"></a>   
 
 为了方便构造图，将输入改为
 1、vertex.txt，点的构造，(顶点id,顶点名称):
@@ -35,6 +36,7 @@ tags : [dijkstra, graphx, scala]
     5 E
     
 <a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/1.png" target="_blank"> 
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/1.png" style="max-width:100%;"></a>   
 
 2、edge.txt，边的构造，(起点id,终点id,边的权值):
 
@@ -50,14 +52,17 @@ tags : [dijkstra, graphx, scala]
     5 4 6
     
 <a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/2.png" target="_blank"> 
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/2.png" style="max-width:100%;"></a>   
 
 构造图后的结果：
 
 <a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/4.png" target="_blank"> 
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/4.png" style="max-width:100%;"></a>   
 
 计算出最短路径的结果：
 
 <a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/5.png" target="_blank"> 
+<img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/5.png" style="max-width:100%;"></a>   
 
 最后，代码如下：
 
