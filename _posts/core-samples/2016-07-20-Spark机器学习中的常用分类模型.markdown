@@ -1,0 +1,207 @@
+---
+layout: post
+category : Spark
+tagline: 
+tags : [classification, machine learning, scala]
+---
+{% include JB/setup %}
+
+今天尝试了一下spark的machine learning中分类的3个模型：SVMWithSGD、Random Forest、GBDT等，主要是想要比较一下这三个模型的分类准确率。毕竟像我这种菜鸡，对于新东西都有一种想要给他们的能力排个座次的欲望，简单粗暴而又一目了然。
+
+首先稍微介绍一下这三个分类模型。
+
+<1> SVMWithSGD:SVM，即支持向量机，是一种二分类模型。SGD，随机梯度下降法，是一种优化算法。梯度下降（GD）又叫作最速梯度下降，是一种迭代求解的方法，通过在每一步选取使目标函数变化最快的一个方向调整参数的值来逼近最优值。包括随机梯度下降和批量梯度下降2种。随机梯度下降相对批量梯度下降计算量减少了很多，但是还是需要迭代计算。
+
+<2> Random Forest，随机森林，可用于二分类和多分类问题。其本质是一棵棵决策树组成的森林，通过所有的决策树的结果进行投票决定最终分类结果。每一棵决策树都可以并行生成，无须迭代，因此其计算速度较快。使用了bagging方法。
+
+<3> GBDT，梯度推进决策树，亦可用于二分类和多分类问题。它也是一棵棵决策树的集合，每棵树都是在上一棵树的基础上生成的，并且对上棵树训练错误的样例加大权重，更加关注错误样例，最终组成一棵棵决策树。GBDT的每棵决策树都需要迭代生成，因此计算速度比不上RF。使用了boosting方法。
+
+接着，我们将spark\data\mllib\sample_svm_data.txt数据文件按照8:2的比例划分为sample_svm_train_data.txt和sample_svm_test_data.txt，前者为训练模型用的数据，后者为测试训练模型效果的数据。
+
+然后，实现代码：
+
+SVMWithSGDTest.scala
+
+```java
+package com.ideal.netcare.test.ml.classification
+
+import org.apache.spark.mllib.classification.SVMWithSGD
+import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.{SparkConf, SparkContext}
+
+object SVMWithSGDTest {
+  def main(args: Array[String]) {
+    val conf = new SparkConf()
+    conf.setAppName("SVM with SGD Classification").setMaster("spark://spark-master:7077").set("spark.executor.memory", "512m")
+    val sc = new SparkContext(conf)
+    //本地打包的jar的位置  必备
+    sc.addJar("target/scala-2.10/spark-test_2.10-1.0.jar")
+
+    //加载、解析训练、测试数据文件
+    //将sample_svm_data中的80%作为训练数据，20%作为测试数据
+    //训练数据
+    val trainData = sc.textFile("hdfs://spark-master:9000/syf/spark/data/ml/svm/sample_svm_train_data.txt")
+    val parsedTrainData = trainData.map { line =>
+      val parts = line.split("\\s+")
+      LabeledPoint(parts(0).toDouble, Vectors.dense(parts.tail.map(x => x.toDouble)))
+    }
+    //测试数据
+    val testData = sc.textFile("hdfs://spark-master:9000/syf/spark/data/ml/svm/sample_svm_test_data.txt")
+    val parsedTestData = testData.map { line =>
+      val parts = line.split("\\s+")
+      LabeledPoint(parts(0).toDouble, Vectors.dense(parts.tail.map(x => x.toDouble)))
+    }
+
+    //设置迭代次数并训练模型
+    val numIterations = 50
+    val model = SVMWithSGD.train(parsedTrainData, numIterations)
+
+    //模型预测测试数据结果
+    val labelAndPreds = parsedTestData.map { point =>
+      val prediction = model.predict(point.features)
+      (point.label, prediction)
+    }
+
+    //计算分类错误率
+    val trainErr = labelAndPreds.filter(r => r._1 != r._2).count.toDouble / parsedTestData.count
+    println(s"trainErr = ${trainErr}")
+  }
+}
+
+```
+
+RFClassificationTest.scala
+
+```java
+package com.ideal.netcare.test.ml.classification
+
+import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.tree.RandomForest
+import org.apache.spark.{SparkConf, SparkContext}
+
+object RFClassificationTest {
+  def main(args: Array[String]) {
+    val conf = new SparkConf()
+    conf.setAppName("Random Forest Classification").setMaster("spark://spark-master:7077").set("spark.executor.memory", "512m")
+    val sc = new SparkContext(conf)
+    //本地打包的jar的位置  必备
+    sc.addJar("target/scala-2.10/spark-test_2.10-1.0.jar")
+
+    //加载、解析训练、测试数据文件
+    //将sample_svm_data中的80%作为训练数据，20%作为测试数据
+    val trainData = sc.textFile("hdfs://spark-master:9000/syf/spark/data/ml/svm/sample_svm_train_data.txt")
+    val parsedTrainData = trainData.map { line =>
+      val parts = line.split("\\s+")
+      LabeledPoint(parts(0).toDouble, Vectors.dense(parts.tail.map(x => x.toDouble)))
+    }
+    //测试数据
+    val testData = sc.textFile("hdfs://spark-master:9000/syf/spark/data/ml/svm/sample_svm_test_data.txt")
+    val parsedTestData = testData.map { line =>
+      val parts = line.split("\\s+")
+      LabeledPoint(parts(0).toDouble, Vectors.dense(parts.tail.map(x => x.toDouble)))
+    }
+
+
+    //训练模型
+    val numClasses = 2
+    val categoricalFeaturesInfo = Map[Int, Int]()
+    val numTrees = 50
+    val featureSubsetStrategy = "auto"
+    val impurity = "gini"
+    val maxDepth = 4
+    val maxBins = 32
+
+    val model = RandomForest.trainClassifier(parsedTrainData, numClasses, categoricalFeaturesInfo,
+      numTrees, featureSubsetStrategy, impurity, maxDepth, maxBins)
+
+    //模型预测测试数据结果
+    val labelAndPreds = parsedTestData.map { point =>
+      val prediction = model.predict(point.features)
+      (point.label, prediction)
+    }
+
+    //计算分类错误率
+    val trainErr = labelAndPreds.filter(r => r._1 != r._2).count.toDouble / parsedTestData.count
+    println(s"trainErr = ${trainErr}")
+//    println("Learned classification forest model:\n" + model.toDebugString)
+
+    //保存和加载模型
+//    model.save(sc, "/hadoop/spark-model/myRandomForestClassificationModel")
+//    val sameModel = RandomForestModel.load(sc, "/hadoop/spark-model/myRandomForestClassificationModel")
+  }
+
+}
+
+```
+
+GBDTClassificationTest.scala
+
+```java
+package com.ideal.netcare.test.ml.classification
+
+import org.apache.spark.mllib.linalg.Vectors
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.tree.GradientBoostedTrees
+import org.apache.spark.mllib.tree.configuration.{BoostingStrategy, Strategy}
+import org.apache.spark.{SparkConf, SparkContext}
+
+object GBDTClassificationTest {
+  def main(args: Array[String]) {
+    val conf = new SparkConf()
+    conf.setAppName("Gradient Boosting Classification").setMaster("spark://spark-master:7077").set("spark.executor.memory", "512m")
+    val sc = new SparkContext(conf)
+    //本地打包的jar的位置  必备
+    sc.addJar("target/scala-2.10/spark-test_2.10-1.0.jar")
+
+    //加载、解析训练、测试数据文件
+    //将sample_svm_data中的80%作为训练数据，20%作为测试数据
+    val trainData = sc.textFile("hdfs://spark-master:9000/syf/spark/data/ml/svm/sample_svm_train_data.txt")
+    val parsedTrainData = trainData.map { line =>
+      val parts = line.split("\\s+")
+      LabeledPoint(parts(0).toDouble, Vectors.dense(parts.tail.map(x => x.toDouble)))
+    }
+    //测试数据
+    val testData = sc.textFile("hdfs://spark-master:9000/syf/spark/data/ml/svm/sample_svm_test_data.txt")
+    val parsedTestData = testData.map { line =>
+      val parts = line.split("\\s+")
+      LabeledPoint(parts(0).toDouble, Vectors.dense(parts.tail.map(x => x.toDouble)))
+    }
+
+    val boostingStrategy = BoostingStrategy.defaultParams("Classification")
+    boostingStrategy.setNumIterations(50)
+    val treeStrategy=Strategy.defaultStrategy("Classification")
+    treeStrategy.setNumClasses(2)
+    treeStrategy.setMaxDepth(4)
+    treeStrategy.setMaxBins(32)
+    boostingStrategy.setTreeStrategy(treeStrategy)
+
+    val model = GradientBoostedTrees.train(parsedTrainData, boostingStrategy)
+
+    // 模型预测测试数据结果
+    val labelAndPreds = parsedTestData.map { point =>
+      val prediction = model.predict(point.features)
+      (point.label, prediction)
+    }
+
+    //计算分类错误率
+    val trainErr = labelAndPreds.filter(r => r._1 != r._2).count.toDouble / parsedTestData.count()
+    println(s"trainErr = ${trainErr}")
+//    println("Learned classification GBT model:\n" + model.toDebugString)
+
+//    // 保存和加载模型
+//    model.save(sc, "/hadoop/spark-model/myGradientBoostingClassificationModel")
+//    val sameModel = GradientBoostedTreesModel.load(sc, "/hadoop/spark-model/myGradientBoostingClassificationModel")
+  }
+}
+
+```
+
+最后，将SVM和GBDT的迭代次数设为50，将RF的决策树的棵数设为50，计算到的分类错误率为：
+
+    RF         的 trainErr = 0.328125
+    SVMWithSGD 的 trainErr = 0.375
+    GBDT       的 trainErr = 0.453125
+    
+RF每次执行的结果都不相同，有好有坏，但是基本上都要好于 SVMWithSGD 和 GBDT，而 SVMWithSGD 的效果要好于 GBDT。当然，有一句话说的好：没有无敌的模型，只有最适合的模型。实际应用中还是要综合考虑各种因素来选择最适合的模型。
