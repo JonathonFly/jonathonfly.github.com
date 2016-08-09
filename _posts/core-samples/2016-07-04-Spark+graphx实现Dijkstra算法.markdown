@@ -10,18 +10,18 @@ tags : [dijkstra, graphx, scala]
 
 主要用到了graphx中构建图的方法和Pregel方法这两个主要内容，好了，话不多说，展示结果。
 
-输入：(A#B#10)表示从A指向B的路径长度为10
+输入：(A B 10)表示从A指向B的路径长度为10
 
-    A#B#10
-    A#C#5
-    B#C#2
-    B#D#1
-    C#B#3
-    C#D#9
-    C#E#2
-    D#E#4
-    E#A#7
-    E#D#6
+    A B 10
+    A C 5
+    B C 2
+    B D 1
+    C B 3
+    C D 9
+    C E 2
+    D E 4
+    E A 7
+    E D 6
     
 <a href="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/3.png" target="_blank"> 
 <img src="https://raw.githubusercontent.com/JonathonFly/jonathonfly.github.com/master/_posts/core-samples/pictures/2016-07-04/3.png" style="max-width:100%;"></a>   
