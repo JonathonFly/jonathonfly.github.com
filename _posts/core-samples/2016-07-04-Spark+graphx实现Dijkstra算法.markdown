@@ -114,6 +114,7 @@ object Dijkstra extends Logging {
     val initialGraph = graph.mapVertices((id, attr) => if (id == sourceId) (0.0, attr._2, sourceName) else (Double.PositiveInfinity, attr._2, sourceName))
     initialGraph.cache()
 
+    //(Double.PositiveInfinity, "", "")为初始消息，用于调用第一次Vertex Program，以实现初始化。
     val sssp = initialGraph.pregel((Double.PositiveInfinity, "", ""))(
       (id, dist, newDist) => {
         if (dist._1 < newDist._1) dist else (newDist._1, dist._2, newDist._3)
