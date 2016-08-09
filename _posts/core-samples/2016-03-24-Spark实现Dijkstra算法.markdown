@@ -6,7 +6,7 @@ tags : [dijkstra]
 ---
 {% include JB/setup %}
 
-之前有一篇写到用Hadoop的MapReduce实现Dijkstra算法，现在，原理不变，将其翻译到Spark环境下（初学，暂时不用GraphX，只用类似MapReduce的操作）。由于原理已经在那一片blog中阐述过，这里不再赘述（PS：输入也是一致的）。简单粗暴，直接上代码。
+之前有一篇写到用Hadoop的MapReduce实现Dijkstra算法，现在，原理不变，将其翻译到Spark环境下（初学，暂时不用GraphX，只用类似MapReduce的操作）。由于原理已经在那一篇blog中阐述过，这里不再赘述（PS：输入也是一致的）。简单粗暴，直接上代码。
 
 ```java
 package com.ideal.netcare;
